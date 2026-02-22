@@ -18,20 +18,25 @@ export class GuestbookService {
 
   async findAll() {
     const { data, error } = await this.supabase
-      .from('Guestbook')
+      .from('guestbook')
       .select('*')
-      .order('createdAt', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Supabase error fetching guestbook:', error);
       throw new InternalServerErrorException('Failed to fetch guestbook messages');
     }
-    return data || [];
+    
+    // Map the Supabase created_at column back to the createdAt that the React frontend expects
+    return (data || []).map(entry => ({
+      ...entry,
+      createdAt: entry.created_at
+    }));
   }
 
   async create(data: { name: string; message: string }) {
     const { data: newEntry, error } = await this.supabase
-      .from('Guestbook')
+      .from('guestbook')
       .insert([
         { name: data.name, message: data.message }
       ])
@@ -41,12 +46,17 @@ export class GuestbookService {
        console.error('Supabase error creating entry:', error);
        throw new InternalServerErrorException('Failed to create guestbook message');
     }
-    return newEntry[0];
+    
+    const entry = newEntry[0];
+    return {
+      ...entry,
+      createdAt: entry.created_at
+    };
   }
 
   async delete(id: number) {
     const { data, error } = await this.supabase
-      .from('Guestbook')
+      .from('guestbook')
       .delete()
       .match({ id })
       .select();
