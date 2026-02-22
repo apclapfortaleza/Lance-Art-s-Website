@@ -196,10 +196,17 @@
   background-color: rgba(245, 240, 230, 0.95) !important;
 }
 
+.sketch-mode .bg-zinc-900\/50,
+.sketch-mode .bg-zinc-950\/50 {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
 /* Border overrides */
 .sketch-mode .border-zinc-800,
 .sketch-mode .border-zinc-700,
-.sketch-mode .border-zinc-700\/30 {
+.sketch-mode .border-zinc-700\/30,
+.sketch-mode .border-zinc-700\/50,
+.sketch-mode .border-zinc-800\/50 {
   border-color: rgba(60, 50, 40, 0.15) !important;
 }
 
