@@ -473,32 +473,32 @@ const Hobbies = () => {
          onClick={(e) => e.stopPropagation()}>
          
        {/* Battle Arena Background */}
-       <div className="relative h-[50%] sm:h-[60%] w-full bg-gradient-to-b from-sky-200 to-sky-100 flex-none border-b-4 border-zinc-800 overflow-hidden">
+       <div className="relative flex-1 min-h-[50%] w-full bg-gradient-to-b from-sky-200 to-sky-100 border-b-4 border-zinc-800 overflow-hidden">
            
            {/* Exit Button - Top Center */}
-           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50">
-               <button onClick={(e) => { e.stopPropagation(); endML(); }} className="px-6 py-1 bg-red-600 hover:bg-red-500 text-white rounded-md font-bold text-xs sm:text-sm shadow-md border-2 border-red-800">RUN</button>
+           <div className="absolute top-2 sm:top-3 left-1/2 -translate-x-1/2 z-50">
+               <button onClick={(e) => { e.stopPropagation(); endML(); }} className="px-4 py-1 sm:px-6 bg-red-600 hover:bg-red-500 text-white rounded-md font-bold text-[10px] sm:text-sm shadow-md border-2 border-red-800">RUN</button>
            </div>
 
            {/* Enemy Platform */}
-           <div className="absolute top-[30%] right-[10%] w-32 h-10 sm:w-48 sm:h-12 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
+           <div className="absolute top-[25%] sm:top-[30%] right-[5%] sm:right-[10%] w-24 h-8 sm:w-48 sm:h-12 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
            
            {/* Enemy Sprite (Chou) - Top Right */}
            <img 
                src="/chou.png" 
                alt="Chou Sprite"
-               className={`absolute bottom-[35%] sm:bottom-[40%] right-[10%] sm:right-[15%] w-24 h-24 sm:w-32 sm:h-32 object-contain z-10 transition-transform drop-shadow-xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && !isMlPlayerTurn ? 'animate-[bounce_0.5s_ease-in-out_infinite]' : ''} ${mlEnemyHP === 0 ? 'opacity-0 scale-50 transition-all duration-1000' : ''}`}
+               className={`absolute bottom-[35%] right-[5%] w-20 h-20 sm:w-32 sm:h-32 object-contain z-10 transition-transform drop-shadow-xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && !isMlPlayerTurn ? 'animate-[bounce_0.5s_ease-in-out_infinite]' : ''} ${mlEnemyHP === 0 ? 'opacity-0 scale-50 transition-all duration-1000' : ''}`}
                onError={(e) => { e.target.src = 'https://placehold.co/150x150?text=CHOU'; }}
            />
 
            {/* Enemy HUD */}
-           <div className="absolute top-[55%] sm:top-[60%] right-2 sm:right-6 max-w-[140px] sm:max-w-[180px] w-full bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1.5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] z-30">
+           <div className="absolute top-[40%] sm:top-[55%] right-2 sm:right-6 max-w-[120px] sm:max-w-[180px] w-full bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1 sm:p-1.5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] z-30">
               <div className="flex justify-between items-end border-b-2 border-zinc-300 pb-0.5 mb-1">
-                 <span className="font-bold text-zinc-900 text-[10px] sm:text-sm tracking-widest pl-1 sm:pl-2">CHOU</span>
-                 <span className="font-bold text-zinc-600 text-[8px] sm:text-[10px]">Lv50</span>
+                 <span className="font-bold text-zinc-900 text-[9px] sm:text-sm tracking-widest pl-1 sm:pl-2">CHOU</span>
+                 <span className="font-bold text-zinc-600 text-[7px] sm:text-[10px]">Lv50</span>
               </div>
               <div className="flex items-center gap-1 pl-1 bg-zinc-800 rounded-full p-0.5 border border-zinc-600 shadow-inner">
-                 <span className="text-[6px] sm:text-[8px] font-bold text-yellow-400 tracking-wider">HP</span>
+                 <span className="text-[5px] sm:text-[8px] font-bold text-yellow-400 tracking-wider">HP</span>
                  <div className="flex-1 h-1.5 sm:h-2.5 bg-zinc-700 rounded-full overflow-hidden">
                     <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${mlEnemyHP}%`, backgroundColor: mlEnemyHP > 50 ? '#22c55e' : mlEnemyHP > 20 ? '#eab308' : '#ef4444' }}></div>
                  </div>
@@ -506,20 +506,20 @@ const Hobbies = () => {
            </div>
 
            {/* Player Platform */}
-           <div className="absolute bottom-8 left-4 w-40 h-12 sm:w-60 sm:h-16 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
+           <div className="absolute bottom-6 sm:bottom-8 left-2 sm:left-4 w-32 h-10 sm:w-60 sm:h-16 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
            
            {/* Player Sprite (Layla) - Bottom Left */}
            <img 
                src="/layla.png" 
                alt="Layla Sprite"
-               className={`absolute bottom-10 left-6 w-32 h-32 sm:w-44 sm:h-44 object-contain z-10 transition-transform origin-bottom drop-shadow-2xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && isMlPlayerTurn ? 'animate-[pulse_2s_ease-in-out_infinite]' : ''} ${mlPlayerHP === 0 ? 'opacity-0 translate-y-20 transition-all duration-1000' : ''}`}
+               className={`absolute bottom-4 sm:bottom-10 left-2 sm:left-6 w-24 h-24 sm:w-44 sm:h-44 object-contain z-10 transition-transform origin-bottom drop-shadow-2xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && isMlPlayerTurn ? 'animate-[pulse_2s_ease-in-out_infinite]' : ''} ${mlPlayerHP === 0 ? 'opacity-0 translate-y-20 transition-all duration-1000' : ''}`}
                onError={(e) => { e.target.src = 'https://placehold.co/150x150?text=LAYLA'; }}
            />
 
            {/* Floating Dialogue Text */}
            {mlLog && (
-              <div className={`absolute z-40 pointer-events-none w-max ${mlLog.includes('CHOU') || mlLog.includes('JEET') ? 'top-[45%] right-[25%]' : 'bottom-[40%] left-[25%]'}`}>
-                 <div className="text-zinc-900 bg-transparent px-2 py-1 text-sm sm:text-lg font-black font-mono italic drop-shadow-[0_0_8px_rgba(255,255,255,1)] flex items-center">
+              <div className={`absolute z-40 pointer-events-none w-max max-w-[80vw] ${mlLog.includes('CHOU') || mlLog.includes('JEET') ? 'top-[45%] right-[20%]' : 'bottom-[35%] left-[20%]'}`}>
+                 <div className="text-zinc-900 bg-transparent px-2 py-1 text-[10px] sm:text-lg font-black font-mono italic drop-shadow-[0_0_8px_rgba(255,255,255,1)] flex items-center">
                     {mlLog}
                     {(!isMlPlayerTurn && mlPlayerHP > 0 && mlEnemyHP > 0) && <span className="animate-pulse ml-2 text-zinc-600">▼</span>}
                  </div>
@@ -528,10 +528,10 @@ const Hobbies = () => {
        </div>
 
        {/* Bottom Control Area - Skills & Layla HP */}
-       <div className="flex-1 bg-zinc-100 flex p-2 sm:p-5 shadow-[inset_0_4px_10px_rgba(0,0,0,0.1)] items-center gap-2 sm:gap-4 overflow-hidden">
+       <div className="h-28 sm:h-auto sm:flex-1 bg-zinc-100 flex p-1.5 sm:p-5 shadow-[inset_0_4px_10px_rgba(0,0,0,0.1)] items-center gap-1.5 sm:gap-4 overflow-hidden">
           
           {/* Layla HP */}
-          <div className="flex-shrink-0 w-[35%] sm:max-w-[200px] h-full max-h-[100px] bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1.5 sm:p-2 shadow-[2px_2px_0px_rgba(0,0,0,0.2)] flex flex-col justify-center">
+          <div className="flex-shrink-0 w-[40%] sm:max-w-[200px] h-full sm:max-h-[100px] bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1 sm:p-2 shadow-[2px_2px_0px_rgba(0,0,0,0.2)] flex flex-col justify-center">
               <div className="flex justify-between items-end border-b-2 border-zinc-300 pb-0.5 mb-1">
                  <span className="font-bold text-zinc-900 text-[10px] sm:text-base tracking-widest px-1">LAYLA</span>
                  <span className="font-bold text-zinc-600 text-[8px] sm:text-[10px]">Lv50</span>
@@ -548,26 +548,26 @@ const Hobbies = () => {
           </div>
 
           {/* Skills Grid */}
-          <div className="flex-1 h-full max-w-lg flex flex-col justify-center py-1">
-              <div className="grid grid-cols-2 gap-1.5 sm:gap-3 h-full">
+          <div className="flex-1 h-full sm:max-w-lg flex flex-col justify-center py-1">
+              <div className="grid grid-cols-2 gap-1 sm:gap-3 h-full">
                   <button 
                      onClick={(e) => { e.stopPropagation(); useMLSkill('basic'); }}
                      disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
-                     className="bg-red-500 disabled:bg-red-300 hover:bg-red-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
+                     className="bg-red-500 disabled:bg-red-300 hover:bg-red-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-md sm:rounded-xl font-bold text-[8px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
                   >
                      Basic ATK
                   </button>
                   <button 
                      onClick={(e) => { e.stopPropagation(); useMLSkill('skill1'); }}
                      disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
-                     className="bg-blue-500 disabled:bg-blue-300 hover:bg-blue-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
+                     className="bg-blue-500 disabled:bg-blue-300 hover:bg-blue-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-md sm:rounded-xl font-bold text-[8px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
                   >
                      Malefic Bomb
                   </button>
                   <button 
                      onClick={(e) => { e.stopPropagation(); useMLSkill('ult'); }}
                      disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
-                     className="bg-purple-500 disabled:bg-purple-300 hover:bg-purple-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2 col-span-2"
+                     className="bg-purple-500 disabled:bg-purple-300 hover:bg-purple-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-md sm:rounded-xl font-bold text-[8px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2 col-span-2"
                   >
                      Destruction Rush
                   </button>
@@ -578,11 +578,11 @@ const Hobbies = () => {
        {/* Game Over Overlay */}
        {(mlPlayerHP <= 0 || mlEnemyHP <= 0) && (
           <div className="absolute inset-0 bg-black/60 z-50 pointer-events-auto flex flex-col items-center justify-center h-full backdrop-blur-sm">
-              <h3 className={`text-6xl sm:text-7xl font-black tracking-widest uppercase mb-6 sm:mb-10 drop-shadow-[0_0_20px_rgba(0,0,0,1)] ${mlPlayerHP <= 0 ? 'text-red-500 scale-95' : 'text-yellow-400 animate-bounce'}`}>
+              <h3 className={`text-4xl sm:text-7xl font-black tracking-widest uppercase mb-6 sm:mb-10 drop-shadow-[0_0_20px_rgba(0,0,0,1)] ${mlPlayerHP <= 0 ? 'text-red-500 scale-95' : 'text-yellow-400 animate-bounce'}`}>
                  {mlPlayerHP <= 0 ? 'DEFEAT' : 'VICTORY!'}
               </h3>
               <div className="mt-4 text-center">
-                 <button onClick={(e) => { e.stopPropagation(); startML(); }} className="px-10 py-4 bg-zinc-800 hover:bg-zinc-700 text-white border-[4px] border-white rounded-full font-bold shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all hover:scale-105 text-lg sm:text-xl uppercase tracking-wider pointer-events-auto animate-pulse">Play Again</button>
+                 <button onClick={(e) => { e.stopPropagation(); startML(); }} className="px-6 py-3 sm:px-10 sm:py-4 bg-zinc-800 hover:bg-zinc-700 text-white border-[3px] sm:border-[4px] border-white rounded-full font-bold shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all hover:scale-105 text-sm sm:text-xl uppercase tracking-wider pointer-events-auto animate-pulse">Play Again</button>
               </div>
           </div>
        )}
@@ -938,11 +938,11 @@ const Hobbies = () => {
           <div className="max-w-4xl mx-auto flex flex-col items-center animate-fade-in-up">
              
              {/* TV/Monitor Display */}
-             <div className="flex flex-col items-center justify-center min-h-[500px] mb-12 w-full">
+             <div className="flex flex-col items-center justify-center min-h-[400px] sm:min-h-[500px] mb-12 w-full">
                {selectedGame?.device === 'mobile' ? (
-                 <div className="w-[95vw] max-w-[750px] h-[280px] sm:h-[360px] bg-zinc-900 border-[6px] sm:border-8 border-zinc-800 rounded-[2.5rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-2xl relative flex items-center justify-center transition-all duration-500">
-                    <div className="h-20 w-4 sm:w-6 bg-black rounded-r-xl absolute left-0 z-20"></div>
-                    <div className="w-full h-full bg-black rounded-[1.8rem] sm:rounded-[2.5rem] overflow-hidden relative border-[3px] border-zinc-950 flex items-center justify-center">
+                 <div className="w-[95vw] max-w-[750px] aspect-[18/9] sm:h-[360px] bg-zinc-900 border-[4px] sm:border-8 border-zinc-800 rounded-[2rem] sm:rounded-[3.5rem] p-1.5 sm:p-4 shadow-2xl relative flex items-center justify-center transition-all duration-500">
+                    <div className="h-10 sm:h-20 w-3 sm:w-6 bg-black rounded-r-xl absolute left-0 z-20"></div>
+                    <div className="w-full h-full bg-black rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden relative border-[2px] sm:border-[3px] border-zinc-950 flex items-center justify-center">
                       {selectedGame ? (
                         selectedGame.name === 'Mobile Legends' && isMLActive ? renderML() : (
                           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 sm:gap-4 transition-all duration-500 p-4 sm:p-6" style={{ backgroundColor: selectedGame.color }}>
@@ -950,11 +950,11 @@ const Hobbies = () => {
                               src={selectedGame.icon} 
                               alt={selectedGame.name} 
                               onClick={selectedGame.name === 'Mobile Legends' ? startML : undefined}
-                              className={`w-24 h-24 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-2xl sm:rounded-[2rem] shadow-2xl object-cover shrink-0 ${selectedGame.name === 'Mobile Legends' ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
+                              className={`w-20 h-20 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-2xl sm:rounded-[2rem] shadow-2xl object-cover shrink-0 ${selectedGame.name === 'Mobile Legends' ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
                             />
                             <h3 className="text-xl sm:text-3xl md:text-4xl font-bold text-white shadow-black drop-shadow-xl tracking-widest uppercase text-center truncate w-full px-4">{selectedGame.name}</h3>
                             {selectedGame.name === 'Mobile Legends' && (
-                              <p className="text-xs sm:text-sm font-medium text-white/90 animate-pulse bg-black/40 px-3 py-1 rounded-full shadow-lg border border-white/20">👆 Tap Icon to Play</p>
+                              <p className="text-[10px] sm:text-sm font-medium text-white/90 animate-pulse bg-black/40 px-3 py-1 rounded-full shadow-lg border border-white/20">👆 Tap Icon to Play</p>
                             )}
                           </div>
                         )

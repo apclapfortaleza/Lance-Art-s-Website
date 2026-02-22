@@ -63,6 +63,8 @@ const Education = () => {
       id="edu" 
       className="py-24 bg-zinc-950 relative overflow-hidden min-h-screen flex flex-col justify-center"
       onMouseEnter={() => setIsSystemActive(true)}
+      onClick={() => setIsSystemActive(true)}
+      onTouchStart={() => setIsSystemActive(true)}
     >
       
       {/* Background Grid Pattern */}
