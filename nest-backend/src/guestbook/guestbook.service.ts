@@ -6,11 +6,14 @@ export class GuestbookService {
   private supabase: SupabaseClient;
 
   constructor() {
-    // We use the keys provided (usually these should be in a .env file, but since we are deploying directly, we can define them locally or require them inside the environment variables on Vercel)
-    const supabaseUrl = process.env.SUPABASE_URL || 'https://djhsnjdaoauhceqzwrvy.supabase.co';
-    const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqaHNuamRhb2F1aGNlcXp3cnZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNjc0ODgsImV4cCI6MjA4NDY0MzQ4OH0.ygy-LzfvSWc2iCgT1kCOVSae-exvVtm4V4BwItGAyC0';
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_KEY;
     
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn("⚠️ SUPABASE_URL or SUPABASE_KEY environment variables are missing! Database connection will fail.");
+    }
+    
+    this.supabase = createClient(supabaseUrl || '', supabaseKey || '');
   }
 
   async findAll() {
