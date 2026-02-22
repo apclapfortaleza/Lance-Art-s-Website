@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, Trash2, MessageSquareHeart } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/guestbook';
+const API_URL = 'https://lance-art-s-website-9lao.vercel.app/guestbook/';
 
 const Guestbook = () => {
   const [comments, setComments] = useState([]);
