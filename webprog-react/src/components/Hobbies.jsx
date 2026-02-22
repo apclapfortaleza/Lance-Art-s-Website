@@ -1,0 +1,1068 @@
+﻿import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Music, Gamepad2, Play, Pause, SkipBack, Volume2, VolumeX, Disc, ChevronDown, ChevronUp, Crosshair } from 'lucide-react';
+
+const hobbyData = {
+  music: {
+    title: "Music",
+    icon: <Music size={20} />,
+    top5: [
+      { name: "America's Next Freak", artist: "FM-Static", img: "/assets/song1.png", audio: "/assets/music1.mp3", color: "59, 130, 246" },
+      { name: "Teenage Dirtbag", artist: "Wheatus", img: "/assets/song2.png", audio: "/assets/music2.mp3", color: "34, 197, 94" },
+      { name: "Famous Last Words", artist: "My Chemical Romance", img: "/assets/song3.png", audio: "/assets/music3.mp3", color: "239, 68, 68" },
+      { name: "Tears Over Beers", artist: "Modern Baseball", img: "/assets/song4.png", audio: "/assets/music4.mp3", color: "249, 115, 22" },
+      { name: "Bullet proof Love", artist: "Pierce the Veil", img: "/assets/song5.png", audio: "/assets/music5.mp3", color: "236, 72, 153" },
+      { name: "Hard Times", artist: "Paramore", img: "/assets/song6.png", audio: "/assets/music6.mp3", color: "168, 85, 247" },
+    ],
+  },
+  games: {
+    title: "Gaming",
+    icon: <Gamepad2 size={20} />,
+    items: [
+      { name: "Valorant", device: "pc", color: "#ff4655", icon: "https://i.pinimg.com/1200x/f5/dd/24/f5dd24b3418701f617275cfa6a265ac8.jpg" },
+      { name: "Roblox", device: "pc", color: "#4923c6ff", icon: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Roblox_Logo_2025.png" },
+      { name: "Minecraft", device: "pc", color: "#538b32", icon: "https://images.icon-icons.com/2699/PNG/512/minecraft_logo_icon_168974.png" },
+      { name: "Mobile Legends", device: "mobile", color: "#d4ca3eff", icon: "https://downloadr2.apkmirror.com/wp-content/uploads/2024/01/45/65ba54423faa3_com.mobile.legends.png" },
+      { name: "Discord: khaoss.x", device: "mobile", color: "#7753ecff", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZkjJsjxdWHZx1bu22YA_cJm7bicMd7d_pfw&s" },
+    ],
+  },
+};
+
+const Hobbies = () => {
+  const [activeTab, setActiveTab] = useState(null); // Standby state
+  const isActivated = activeTab !== null;
+  const [selectedCD, setSelectedCD] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [showCDRack, setShowCDRack] = useState(false);
+  const audioRef = useRef(null);
+  
+  // Helper to handle activation via hover or click
+  const handleActivation = (tab) => {
+    if (activeTab === tab) return;
+    setActiveTab(tab);
+  };
+  
+  //  // Audio Analysis States
+  const [audioIntensity, setAudioIntensity] = useState(0);
+  const analyserRef = useRef(null);
+  const dataArrayRef = useRef(null);
+  const animationRef = useRef(null);
+  const sourceNodeRef = useRef(null);
+
+  // Memoized Particles for the Music Station (Snowy Fireflies - Enhanced Pool)
+  const musicParticles = useMemo(() => Array.from({ length: 200 }).map(() => ({
+    id: Math.random(),
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 4 + 1,
+    baseDuration: Math.random() * 8 + 8, // Slower, more constant speed
+    delay: Math.random() * -20,
+    driftX: (Math.random() - 0.5) * 250,
+    driftY: (Math.random() - 0.5) * 200,
+    blur: Math.random() * 4,
+    opacity: Math.random() * 0.5 + 0.3
+  })), []);
+
+  useEffect(() => {
+    if (isPlaying && audioRef.current && activeTab === 'music') {
+      try {
+        if (!analyserRef.current) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const audioContext = new AudioContext();
+          const analyser = audioContext.createAnalyser();
+          
+          if (!sourceNodeRef.current) {
+            sourceNodeRef.current = audioContext.createMediaElementSource(audioRef.current);
+          }
+          
+          sourceNodeRef.current.connect(analyser);
+          analyser.connect(audioContext.destination);
+          analyser.fftSize = 64;
+          analyserRef.current = analyser;
+          dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        const updateIntensity = () => {
+          if (analyserRef.current) {
+            analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+            const average = dataArrayRef.current.reduce((a, b) => a + b) / dataArrayRef.current.length;
+            // Map 0-255 to a useful 0-1 scale for animations
+            setAudioIntensity(average / 128); 
+            animationRef.current = requestAnimationFrame(updateIntensity);
+          }
+        };
+        updateIntensity();
+      } catch (err) {
+        console.error("Audio analysis failed:", err);
+      }
+    } else {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      setAudioIntensity(0);
+    }
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [isPlaying, activeTab]);
+
+  // Existing Minigame States... (lines 40-60)
+  
+  // Minigame States
+  const [isMinigameActive, setIsMinigameActive] = useState(false);
+  const [minigameScore, setMinigameScore] = useState(0);
+  const [minigameTime, setMinigameTime] = useState(30);
+  const [targetPos, setTargetPos] = useState({ x: 50, y: 50 });
+  const timerRef = useRef(null);
+
+  // Minecraft Minigame States
+  const [isMinecraftActive, setIsMinecraftActive] = useState(false);
+  const [gridColors, setGridColors] = useState(Array(256).fill('transparent'));
+  const [selectedBrush, setSelectedBrush] = useState('#866043');
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const mcPalette = ['#ffffff', '#000000', '#866043', '#4d7f31', '#7d7d7d', '#a88554', '#2d5718', '#3f6eb7', '#d82b2b', '#ebd12d'];
+
+  // Roblox Minigame States
+  const [isRobloxActive, setIsRobloxActive] = useState(false);
+  const [robloxScore, setRobloxScore] = useState(0);
+  const [isRobloxGameOver, setIsRobloxGameOver] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
+  const [obstaclePos, setObstaclePos] = useState(100);
+  const rbSpeedRef = useRef(1.0);
+  const isJumpingRef = useRef(false);
+
+  // Mobile Legends Minigame States
+  const [isMLActive, setIsMLActive] = useState(false);
+  const [mlPlayerHP, setMlPlayerHP] = useState(100);
+  const [mlEnemyHP, setMlEnemyHP] = useState(100);
+  const [mlLog, setMlLog] = useState("Wild CHOU appeared!");
+  const [isMlPlayerTurn, setIsMlPlayerTurn] = useState(true);
+
+  const startMinigame = () => {
+    setIsMinigameActive(true);
+    setMinigameScore(0);
+    setMinigameTime(30);
+    moveTarget();
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setMinigameTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const endMinigame = () => {
+    setIsMinigameActive(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const moveTarget = () => {
+    setTargetPos({ x: 10 + Math.random() * 80, y: 15 + Math.random() * 70 });
+  };
+
+  const hitTarget = (e) => {
+    e.stopPropagation();
+    if (minigameTime > 0) {
+      setMinigameScore((s) => s + 1);
+      moveTarget();
+    }
+  };
+
+  useEffect(() => {
+    if (selectedGame?.name !== "Valorant") endMinigame();
+    if (selectedGame?.name !== "Minecraft") endMinecraft();
+    if (selectedGame?.name !== "Roblox") endRoblox();
+    if (selectedGame?.name !== "Mobile Legends") endML();
+  }, [selectedGame]);
+
+  const startML = () => {
+    setIsMLActive(true);
+    setMlPlayerHP(100);
+    setMlEnemyHP(100);
+    setMlLog("Wild CHOU appeared!");
+    setIsMlPlayerTurn(true);
+  };
+
+  const endML = () => {
+    setIsMLActive(false);
+  };
+
+  const useMLSkill = (type) => {
+    if (mlPlayerHP <= 0 || mlEnemyHP <= 0 || !isMlPlayerTurn) return;
+    
+    setIsMlPlayerTurn(false);
+    
+    let playerDmg = 0;
+    let skillName = "";
+    if (type === 'basic') { playerDmg = Math.floor(Math.random() * 5) + 10; skillName = "BASIC ATTACK"; }
+    else if (type === 'skill1') { playerDmg = Math.floor(Math.random() * 10) + 20; skillName = "MALEFIC BOMB"; }
+    else if (type === 'ult') { playerDmg = Math.floor(Math.random() * 15) + 35; skillName = "DESTRUCTION RUSH"; }
+    
+    setMlLog(`LAYLA used ${skillName}!`);
+    
+    setTimeout(() => {
+        setMlEnemyHP(hp => {
+            const newHp = Math.max(0, hp - playerDmg);
+            if (newHp === 0) {
+               setTimeout(() => setMlLog("CHOU fainted! YOU WIN!"), 1000);
+            } else {
+               // Enemy Turn
+               setTimeout(() => {
+                  const enemyDmg = Math.floor(Math.random() * 15) + 10;
+                  setMlLog(`CHOU used JEET KUNE DO!`);
+                  setTimeout(() => {
+                     setMlPlayerHP(php => {
+                        const newPHp = Math.max(0, php - enemyDmg);
+                        if (newPHp === 0) {
+                            setTimeout(() => setMlLog("LAYLA fainted! YOU LOSE!"), 1000);
+                        } else {
+                            setIsMlPlayerTurn(true);
+                        }
+                        return newPHp;
+                     });
+                  }, 1000);
+               }, 1500);
+            }
+            return newHp;
+        });
+    }, 1000);
+  };
+
+  const startRoblox = () => {
+    setIsRobloxActive(true);
+    setIsRobloxGameOver(false);
+    setRobloxScore(0);
+    setObstaclePos(100);
+    rbSpeedRef.current = 0.5;
+    isJumpingRef.current = false;
+    setIsJumping(false);
+  };
+
+  const endRoblox = () => {
+    setIsRobloxActive(false);
+    setIsRobloxGameOver(false);
+  };
+
+  const handleRobloxJump = (e) => {
+    if (e) e.stopPropagation();
+    if (isRobloxGameOver || isJumpingRef.current) return;
+    isJumpingRef.current = true;
+    setIsJumping(true);
+    setTimeout(() => {
+      isJumpingRef.current = false;
+      setIsJumping(false);
+    }, 550); 
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space' && isRobloxActive && !isRobloxGameOver) {
+        e.preventDefault();
+        handleRobloxJump();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isRobloxActive, isRobloxGameOver]);
+
+  useEffect(() => {
+    if (!isRobloxActive || isRobloxGameOver) return;
+    let animationId;
+    let currentPos = 100;
+    
+    const gameLoop = () => {
+      currentPos -= rbSpeedRef.current;
+      
+      // Collision check (character at left: 10%, width: ~10%, obstacle width ~5%)
+      if (currentPos < 18 && currentPos > 5 && !isJumpingRef.current) {
+         setIsRobloxGameOver(true);
+         return; // stop loop
+      }
+
+      if (currentPos < -10) {
+         setRobloxScore(s => s + 10);
+         rbSpeedRef.current += 0.05; // slowly increase speed
+         currentPos = 100 + Math.random() * 20; // random offset for next spawn
+      }
+      
+      setObstaclePos(currentPos);
+      animationId = requestAnimationFrame(gameLoop);
+    };
+    animationId = requestAnimationFrame(gameLoop);
+    
+    return () => cancelAnimationFrame(animationId);
+  }, [isRobloxActive, isRobloxGameOver]);
+
+  const startMinecraft = () => {
+    setIsMinecraftActive(true);
+    setGridColors(Array(256).fill('transparent'));
+  };
+
+  const endMinecraft = () => {
+    setIsMinecraftActive(false);
+  };
+
+  const paintPixel = (index) => {
+    setGridColors(prev => {
+      const newGrid = [...prev];
+      newGrid[index] = selectedBrush;
+      return newGrid;
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDrawing) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el && el.dataset.index !== undefined) {
+      paintPixel(parseInt(el.dataset.index, 10));
+    }
+  };
+
+  const renderMinigame = () => (
+    <div className="absolute inset-0 bg-zinc-900 overflow-hidden" onClick={() => {}}>
+      {minigameTime > 0 ? (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1)_0%,transparent_100%)] pointer-events-none"></div>
+          <div className="absolute top-2 left-4 sm:top-4 sm:left-6 text-white font-mono text-base sm:text-2xl z-10 drop-shadow-md bg-zinc-950/50 px-3 py-1 rounded-lg">TIME: <span className={minigameTime <= 5 ? "text-red-500 font-bold animate-pulse" : "text-emerald-400 font-bold"}>{minigameTime}s</span></div>
+          <div className="absolute top-2 right-4 sm:top-4 sm:right-6 text-white font-mono text-base sm:text-2xl z-10 drop-shadow-md bg-zinc-950/50 px-3 py-1 rounded-lg">SCORE: <span className="text-blue-400 font-bold">{minigameScore}</span></div>
+          
+          <button 
+             onPointerDown={hitTarget} 
+             className="absolute w-12 h-12 sm:w-16 sm:h-16 bg-red-500 hover:bg-red-400 rounded-full flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 shadow-[0_0_20px_rgba(239,68,68,0.9)] cursor-crosshair active:scale-90 transition-transform" 
+             style={{ left: `${targetPos.x}%`, top: `${targetPos.y}%` }}>
+             <Crosshair size={32} className="text-white opacity-90 pointer-events-none" />
+          </button>
+        </>
+      ) : (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/90 backdrop-blur-sm z-20 gap-3 sm:gap-4">
+           <h3 className="text-3xl sm:text-5xl font-bold text-red-500 animate-pulse">TIME'S UP!</h3>
+           <p className="text-xl sm:text-3xl text-zinc-200">Final Score: <span className="text-blue-400 font-bold">{minigameScore}</span></p>
+           <button onClick={startMinigame} className="mt-2 sm:mt-4 px-6 py-2 sm:py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all hover:scale-105 shadow-[0_0_15px_rgba(79,70,229,0.5)]">PLAY AGAIN</button>
+           <button onClick={endMinigame} className="px-6 py-2 sm:py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl font-bold transition-all">EXIT</button>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderMinecraft = () => (
+    <div className="absolute inset-0 bg-[#7fbdf1] overflow-hidden flex flex-col items-center justify-center p-2 sm:p-4" 
+         onClick={(e) => e.stopPropagation()}
+         onMouseUp={() => setIsDrawing(false)}
+         onMouseLeave={() => setIsDrawing(false)}>
+      
+      {/* Top Bar - Palette & Exit */}
+      <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex justify-between items-center z-10 bg-black/40 p-2 rounded-xl backdrop-blur-md">
+         <div className="flex gap-1 sm:gap-2 overflow-x-auto">
+           {mcPalette.map((color) => (
+             <button 
+               key={color} 
+               onClick={(e) => { e.stopPropagation(); setSelectedBrush(color); }}
+               className={`w-6 h-6 sm:w-8 sm:h-8 shrink-0 rounded-md border-2 transition-transform ${selectedBrush === color ? 'border-white scale-110 shadow-[0_0_10px_white]' : 'border-transparent hover:scale-105'}`}
+               style={{ backgroundColor: color }}
+             />
+           ))}
+         </div>
+         <button onClick={(e) => { e.stopPropagation(); endMinecraft(); }} className="ml-2 px-3 py-1 sm:px-4 sm:py-2 bg-red-500 hover:bg-red-400 text-white rounded-lg font-bold text-xs sm:text-sm shadow-lg shrink-0">EXIT</button>
+      </div>
+
+      {/* 16x16 Grid Canvas */}
+      <div className="w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] md:w-[320px] md:h-[320px] bg-white shadow-2xl border-4 border-zinc-800 mt-8 sm:mt-12 select-none"
+           style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gridTemplateRows: 'repeat(16, 1fr)' }}
+           onMouseDown={(e) => { e.stopPropagation(); setIsDrawing(true); }}
+           onTouchStart={(e) => { e.stopPropagation(); setIsDrawing(true); }}
+           onTouchEnd={() => setIsDrawing(false)}
+           onTouchMove={handleTouchMove}>
+        {gridColors.map((color, idx) => (
+          <div 
+            key={idx}
+            data-index={idx}
+            className="w-full h-full border-[0.5px] border-zinc-300/30 touch-none"
+            style={{ backgroundColor: color === 'transparent' ? 'white' : color }}
+            onMouseDown={(e) => { e.stopPropagation(); paintPixel(idx); }}
+            onMouseEnter={(e) => { if (isDrawing) paintPixel(idx); }}
+          />
+        ))}
+      </div>
+      <p className="text-[#3b5d81] font-mono text-xs sm:text-sm md:text-base mt-2 sm:mt-4 text-center font-bold tracking-widest bg-white/50 px-3 py-1 rounded-full">BUILD PIXEL ART!</p>
+    </div>
+  );
+
+  const renderRoblox = () => (
+    <div className="absolute inset-0 bg-sky-400 overflow-hidden flex flex-col pointer-events-auto">
+      
+      {/* Sky & clouds */}
+      <div className="absolute inset-0 opacity-50 flex justify-around items-start pt-10 pointer-events-none">
+        <div className="w-20 h-8 bg-white rounded-full blur-md"></div>
+        <div className="w-32 h-10 bg-white rounded-full blur-md mt-6"></div>
+      </div>
+
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 flex gap-4 items-center">
+         <div className="bg-black/50 text-white font-mono text-sm sm:text-xl px-4 py-1 rounded-lg backdrop-blur-sm border border-white/10">SCORE: <span className="text-yellow-400 font-bold">{robloxScore}</span></div>
+         <button onClick={(e) => { e.stopPropagation(); endRoblox(); }} className="px-3 py-1 sm:px-4 sm:py-1 bg-red-500 hover:bg-red-400 text-white rounded-lg font-bold text-xs sm:text-sm shadow-lg">EXIT</button>
+      </div>
+
+      {/* Game Area */}
+      <div className="flex-1 relative pointer-events-none">
+         {/* Noob Character */}
+         <div className="absolute bottom-0 left-[10%] w-10 sm:w-16 flex flex-col items-center transition-transform duration-[550ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] z-20"
+              style={{ transform: isJumping ? 'translateY(-140px)' : 'translateY(0)' }}>
+            {/* Head */}
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-yellow-300 rounded-sm border-2 border-yellow-500 flex items-center justify-center">
+               <div className="flex gap-1">
+                 <div className="w-1 h-1 bg-black rounded-full"></div>
+                 <div className="w-1 h-1 bg-black rounded-full"></div>
+               </div>
+            </div>
+            {/* Torso */}
+            <div className="w-8 h-10 sm:w-12 sm:h-14 bg-blue-500 border-2 border-blue-600 rounded-sm relative">
+                {/* Arms */}
+                <div className="absolute -left-3 top-0 w-3 h-8 sm:-left-4 sm:h-12 sm:w-4 bg-yellow-300 border-2 border-yellow-500 rounded-sm origin-top"></div>
+                <div className="absolute -right-3 top-0 w-3 h-8 sm:-right-4 sm:h-12 sm:w-4 bg-yellow-300 border-2 border-yellow-500 rounded-sm origin-top"></div>
+            </div>
+            {/* Legs */}
+            <div className="flex w-8 sm:w-12">
+               <div className="w-1/2 h-8 sm:h-12 bg-green-500 border-2 border-green-600 rounded-sm"></div>
+               <div className="w-1/2 h-8 sm:h-12 bg-green-500 border-2 border-green-600 rounded-sm"></div>
+            </div>
+         </div>
+
+         {/* Obstacle (Lava Block) */}
+         <div className="absolute bottom-0 w-8 sm:w-12 h-10 sm:h-14 bg-red-600 border-t-4 border-orange-500 z-10"
+              style={{ left: `${obstaclePos}%` }}>
+              <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:100%_100%] animate-pulse"></div>
+         </div>
+      </div>
+
+      {/* Ground Grid (Baseplate) */}
+      <div className="h-16 sm:h-24 bg-green-600 border-t-[6px] border-green-800 w-full relative overflow-hidden z-30 pointer-events-none">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+      </div>
+
+      {/* Touch/Click Jump Button Overlay */}
+      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto">
+         <button 
+           onMouseDown={(e) => { e.preventDefault(); handleRobloxJump(e); }}
+           onTouchStart={(e) => { e.preventDefault(); handleRobloxJump(e); }}
+           onClick={(e) => { e.preventDefault(); handleRobloxJump(e); }}
+           className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 hover:bg-white/40 border-2 border-white/50 rounded-full flex flex-col items-center justify-center backdrop-blur-md active:scale-90 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)]"
+         >
+           <span className="text-white font-bold text-2xl leading-none">↑</span>
+           <span className="text-white/80 font-bold text-xs uppercase tracking-wider">JUMP</span>
+         </button>
+      </div>
+
+      {/* Game Over Screen */}
+      {isRobloxGameOver && (
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-40 gap-4 pointer-events-auto">
+           <h3 className="text-4xl sm:text-6xl font-bold text-red-500 tracking-widest uppercase animate-bounce">Oof!</h3>
+           <p className="text-xl sm:text-2xl text-white">Score: <span className="text-yellow-400 font-bold">{robloxScore}</span></p>
+           <button onClick={(e) => { e.stopPropagation(); startRoblox(); }} className="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(37,99,235,0.5)] transition-transform hover:scale-105">Play Again</button>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderML = () => (
+    <div className="absolute inset-0 bg-[#f8f8f8] overflow-hidden flex flex-col pointer-events-auto select-none"
+         onClick={(e) => e.stopPropagation()}>
+         
+       {/* Battle Arena Background */}
+       <div className="relative h-[50%] sm:h-[60%] w-full bg-gradient-to-b from-sky-200 to-sky-100 flex-none border-b-4 border-zinc-800 overflow-hidden">
+           
+           {/* Exit Button - Top Center */}
+           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50">
+               <button onClick={(e) => { e.stopPropagation(); endML(); }} className="px-6 py-1 bg-red-600 hover:bg-red-500 text-white rounded-md font-bold text-xs sm:text-sm shadow-md border-2 border-red-800">RUN</button>
+           </div>
+
+           {/* Enemy Platform */}
+           <div className="absolute top-[30%] right-[10%] w-32 h-10 sm:w-48 sm:h-12 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
+           
+           {/* Enemy Sprite (Chou) - Top Right */}
+           <img 
+               src="/chou.png" 
+               alt="Chou Sprite"
+               className={`absolute bottom-[35%] sm:bottom-[40%] right-[10%] sm:right-[15%] w-24 h-24 sm:w-32 sm:h-32 object-contain z-10 transition-transform drop-shadow-xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && !isMlPlayerTurn ? 'animate-[bounce_0.5s_ease-in-out_infinite]' : ''} ${mlEnemyHP === 0 ? 'opacity-0 scale-50 transition-all duration-1000' : ''}`}
+               onError={(e) => { e.target.src = 'https://placehold.co/150x150?text=CHOU'; }}
+           />
+
+           {/* Enemy HUD */}
+           <div className="absolute top-[55%] sm:top-[60%] right-2 sm:right-6 max-w-[140px] sm:max-w-[180px] w-full bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1.5 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] z-30">
+              <div className="flex justify-between items-end border-b-2 border-zinc-300 pb-0.5 mb-1">
+                 <span className="font-bold text-zinc-900 text-[10px] sm:text-sm tracking-widest pl-1 sm:pl-2">CHOU</span>
+                 <span className="font-bold text-zinc-600 text-[8px] sm:text-[10px]">Lv50</span>
+              </div>
+              <div className="flex items-center gap-1 pl-1 bg-zinc-800 rounded-full p-0.5 border border-zinc-600 shadow-inner">
+                 <span className="text-[6px] sm:text-[8px] font-bold text-yellow-400 tracking-wider">HP</span>
+                 <div className="flex-1 h-1.5 sm:h-2.5 bg-zinc-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${mlEnemyHP}%`, backgroundColor: mlEnemyHP > 50 ? '#22c55e' : mlEnemyHP > 20 ? '#eab308' : '#ef4444' }}></div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Player Platform */}
+           <div className="absolute bottom-8 left-4 w-40 h-12 sm:w-60 sm:h-16 bg-green-200 border-2 border-green-300 rounded-[100%] z-0 shadow-inner block"></div>
+           
+           {/* Player Sprite (Layla) - Bottom Left */}
+           <img 
+               src="/layla.png" 
+               alt="Layla Sprite"
+               className={`absolute bottom-10 left-6 w-32 h-32 sm:w-44 sm:h-44 object-contain z-10 transition-transform origin-bottom drop-shadow-2xl ${mlPlayerHP > 0 && mlEnemyHP > 0 && isMlPlayerTurn ? 'animate-[pulse_2s_ease-in-out_infinite]' : ''} ${mlPlayerHP === 0 ? 'opacity-0 translate-y-20 transition-all duration-1000' : ''}`}
+               onError={(e) => { e.target.src = 'https://placehold.co/150x150?text=LAYLA'; }}
+           />
+
+           {/* Floating Dialogue Text */}
+           {mlLog && (
+              <div className={`absolute z-40 pointer-events-none w-max ${mlLog.includes('CHOU') || mlLog.includes('JEET') ? 'top-[45%] right-[25%]' : 'bottom-[40%] left-[25%]'}`}>
+                 <div className="text-zinc-900 bg-transparent px-2 py-1 text-sm sm:text-lg font-black font-mono italic drop-shadow-[0_0_8px_rgba(255,255,255,1)] flex items-center">
+                    {mlLog}
+                    {(!isMlPlayerTurn && mlPlayerHP > 0 && mlEnemyHP > 0) && <span className="animate-pulse ml-2 text-zinc-600">▼</span>}
+                 </div>
+              </div>
+           )}
+       </div>
+
+       {/* Bottom Control Area - Skills & Layla HP */}
+       <div className="flex-1 bg-zinc-100 flex p-2 sm:p-5 shadow-[inset_0_4px_10px_rgba(0,0,0,0.1)] items-center gap-2 sm:gap-4 overflow-hidden">
+          
+          {/* Layla HP */}
+          <div className="flex-shrink-0 w-[35%] sm:max-w-[200px] h-full max-h-[100px] bg-[#fcf8e3] border-[2px] sm:border-[3px] border-zinc-800 rounded-lg p-1.5 sm:p-2 shadow-[2px_2px_0px_rgba(0,0,0,0.2)] flex flex-col justify-center">
+              <div className="flex justify-between items-end border-b-2 border-zinc-300 pb-0.5 mb-1">
+                 <span className="font-bold text-zinc-900 text-[10px] sm:text-base tracking-widest px-1">LAYLA</span>
+                 <span className="font-bold text-zinc-600 text-[8px] sm:text-[10px]">Lv50</span>
+              </div>
+              <div className="flex items-center gap-1 px-1 bg-zinc-800 rounded-full p-0.5 sm:p-1 border border-zinc-600 shadow-inner">
+                 <span className="text-[6px] sm:text-[10px] font-bold text-yellow-400 tracking-wider">HP</span>
+                 <div className="flex-1 h-1.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${mlPlayerHP}%`, backgroundColor: mlPlayerHP > 50 ? '#22c55e' : mlPlayerHP > 20 ? '#eab308' : '#ef4444' }}></div>
+                 </div>
+              </div>
+              <div className="text-right mt-1 pr-1">
+                 <span className="text-zinc-800 font-black text-[9px] sm:text-sm">{mlPlayerHP}/ 100</span>
+              </div>
+          </div>
+
+          {/* Skills Grid */}
+          <div className="flex-1 h-full max-w-lg flex flex-col justify-center py-1">
+              <div className="grid grid-cols-2 gap-1.5 sm:gap-3 h-full">
+                  <button 
+                     onClick={(e) => { e.stopPropagation(); useMLSkill('basic'); }}
+                     disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
+                     className="bg-red-500 disabled:bg-red-300 hover:bg-red-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
+                  >
+                     Basic ATK
+                  </button>
+                  <button 
+                     onClick={(e) => { e.stopPropagation(); useMLSkill('skill1'); }}
+                     disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
+                     className="bg-blue-500 disabled:bg-blue-300 hover:bg-blue-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2"
+                  >
+                     Malefic Bomb
+                  </button>
+                  <button 
+                     onClick={(e) => { e.stopPropagation(); useMLSkill('ult'); }}
+                     disabled={!isMlPlayerTurn || mlPlayerHP <= 0 || mlEnemyHP <= 0}
+                     className="bg-purple-500 disabled:bg-purple-300 hover:bg-purple-400 text-white border-2 sm:border-[3px] border-zinc-800 rounded-lg sm:rounded-xl font-bold text-[9px] sm:text-sm uppercase shadow-[0_2px_0px_#27272a] sm:shadow-[0_4px_0px_#27272a] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center p-1 sm:p-2 col-span-2"
+                  >
+                     Destruction Rush
+                  </button>
+              </div>
+          </div>
+       </div>
+       
+       {/* Game Over Overlay */}
+       {(mlPlayerHP <= 0 || mlEnemyHP <= 0) && (
+          <div className="absolute inset-0 bg-black/60 z-50 pointer-events-auto flex flex-col items-center justify-center h-full backdrop-blur-sm">
+              <h3 className={`text-6xl sm:text-7xl font-black tracking-widest uppercase mb-6 sm:mb-10 drop-shadow-[0_0_20px_rgba(0,0,0,1)] ${mlPlayerHP <= 0 ? 'text-red-500 scale-95' : 'text-yellow-400 animate-bounce'}`}>
+                 {mlPlayerHP <= 0 ? 'DEFEAT' : 'VICTORY!'}
+              </h3>
+              <div className="mt-4 text-center">
+                 <button onClick={(e) => { e.stopPropagation(); startML(); }} className="px-10 py-4 bg-zinc-800 hover:bg-zinc-700 text-white border-[4px] border-white rounded-full font-bold shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all hover:scale-105 text-lg sm:text-xl uppercase tracking-wider pointer-events-auto animate-pulse">Play Again</button>
+              </div>
+          </div>
+       )}
+    </div>
+  );
+  
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      const current = audioRef.current.currentTime;
+      const duration = audioRef.current.duration;
+      if (duration) {
+        setProgress((current / duration) * 100);
+      }
+    }
+  };
+
+  const handleAudioEnd = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+
+  const handleProgressBarClick = (e) => {
+    if (!audioRef.current || !selectedCD) return;
+    const bar = e.currentTarget;
+    const rect = bar.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newProgress = (clickX / rect.width);
+    
+    audioRef.current.currentTime = newProgress * audioRef.current.duration;
+    setProgress(newProgress * 100);
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab !== 'music') {
+      setIsPlaying(false);
+      if (audioRef.current) audioRef.current.pause();
+    }
+  };
+
+  const playCD = (cd) => {
+    setSelectedCD(cd);
+    setIsPlaying(true);
+    setProgress(0);
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(e => console.log('Audio playback prevented', e));
+      }
+    }, 100);
+  };
+
+  const togglePlay = () => {
+    if (!selectedCD || !audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().catch(e => console.log('Audio playback prevented', e));
+      setIsPlaying(true);
+    }
+  };
+
+  return (
+    <section id="hobbies" className="py-24 bg-zinc-950 min-h-screen relative overflow-hidden transition-colors duration-700">
+      {/* Background gradients based on active tab */}
+      <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${activeTab === 'music' ? 'opacity-100' : 'opacity-0'} bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.1)_0%,transparent_100%)]`}></div>
+      <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${activeTab === 'games' ? 'opacity-100' : 'opacity-0'} bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.1)_0%,transparent_100%)]`}></div>
+
+      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
+        
+        {/* Hobbies Header - Centered & Slightly Visible Initial State */}
+        <div className={`flex flex-col items-center transition-all duration-[1500ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${isActivated ? 'mb-12 translate-y-0 opacity-100 blur-0' : 'mb-20 translate-y-24 opacity-60 blur-sm'}`}>
+          <div className="relative group/title">
+             <div className={`absolute inset-0 bg-blue-500/10 blur-[80px] rounded-full transition-opacity duration-1000 ${isActivated ? 'opacity-100' : 'opacity-20'}`}></div>
+             
+             <div className="flex flex-wrap justify-center gap-x-4">
+               {"Hobbies & Interests".split(" ").map((word, wordIndex) => (
+                 <span key={wordIndex} className="inline-flex whitespace-nowrap">
+                   {word.split("").map((char, charIndex) => (
+                     <span 
+                       key={charIndex}
+                       style={{ transitionDelay: `${(wordIndex * 10 + charIndex) * 40}ms` }}
+                       className="text-4xl md:text-8xl font-black tracking-tighter text-white hover:text-blue-400 drop-shadow-[0_0_8px_rgba(255,255,255,0)] hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:scale-125 hover:-translate-y-4 cursor-default inline-block select-none whitespace-pre animate-fade-in-up [transition:color_1000ms,transform_300ms,filter_300ms]"
+                     >
+                       {char}
+                     </span>
+                   ))}
+                 </span>
+               ))}
+             </div>
+          </div>
+          <div className={`h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-1000 ${isActivated ? 'w-full opacity-100' : 'w-48 opacity-40'}`}></div>
+        </div>
+
+        {/* Choice Buttons - Icon Standby -> Text Active */}
+        <div className={`flex flex-col items-center transition-all duration-1000 ${isActivated ? 'mb-16' : 'mb-32 translate-y-24'}`}>
+          <div className="flex gap-16 items-center">
+            {/* Music Button */}
+            <button 
+              onMouseEnter={() => !isActivated && setActiveTab('music')}
+              onClick={() => setActiveTab('music')}
+              className="flex flex-col items-center group"
+            >
+              <div className={`transition-all duration-700 overflow-hidden flex items-center justify-center ${isActivated ? 'w-0 h-0 opacity-0 mb-0' : 'w-24 h-24 rounded-[2.5rem] border-2 mb-6 bg-transparent border-white/10 group-hover:border-white shadow-[0_0_0_rgba(255,255,255,0)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'}`}>
+                <Music size={32} className="text-white/40 group-hover:text-white transition-all duration-700" />
+              </div>
+              <span className={`text-[10px] font-black tracking-[0.5em] uppercase transition-all duration-700 ${activeTab === 'music' ? 'text-white' : 'text-zinc-600 group-hover:text-zinc-300'}`}>
+                {isActivated ? '01 // MUSIC STATION' : '01 // MUSIC'}
+              </span>
+              {isActivated && activeTab === 'music' && (
+                <div className="h-0.5 w-8 bg-blue-500 mt-2 rounded-full shadow-[0_0_10px_#3b82f6]"></div>
+              )}
+            </button>
+
+            {/* Gaming Button */}
+            <button 
+              onMouseEnter={() => !isActivated && setActiveTab('games')}
+              onClick={() => setActiveTab('games')}
+              className="flex flex-col items-center group"
+            >
+              <div className={`transition-all duration-700 overflow-hidden flex items-center justify-center ${isActivated ? 'w-0 h-0 opacity-0 mb-0' : 'w-24 h-24 rounded-[2.5rem] border-2 mb-6 bg-transparent border-white/10 group-hover:border-white shadow-[0_0_0_rgba(255,255,255,0)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'}`}>
+                <Gamepad2 size={32} className="text-white/40 group-hover:text-white transition-all duration-700" />
+              </div>
+              <span className={`text-[10px] font-black tracking-[0.5em] uppercase transition-all duration-700 ${activeTab === 'games' ? 'text-white' : 'text-zinc-600 group-hover:text-zinc-300'}`}>
+                {isActivated ? '02 // GAME TERMINAL' : '02 // GAMING'}
+              </span>
+              {isActivated && activeTab === 'games' && (
+                <div className="h-0.5 w-8 bg-indigo-500 mt-2 rounded-full shadow-[0_0_10px_#6366f1]"></div>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Content Container - Always Centered with Blur Transition */}
+        <div className={`w-full transition-all duration-1000 ${isActivated ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-12 blur-2xl pointer-events-none'}`}>
+
+        {/* Music View */}
+        {activeTab === 'music' && (
+          <div className="max-w-4xl mx-auto flex flex-col items-center animate-fade-in-up">
+            
+            {/* Music Player with Reactive Particle Field */}
+            <div className="relative w-full max-w-md">
+              {/* Responsive Particles Container */}
+              <div className="absolute inset-[-100px] z-0 pointer-events-none">
+                {musicParticles.slice(0, Math.floor(40 + (160 * audioIntensity))).map((particle) => (
+                  <div 
+                    key={particle.id}
+                    className="absolute rounded-full transition-all duration-300"
+                    style={{
+                      left: `${particle.x}%`,
+                      top: `${particle.y}%`,
+                      width: `${particle.size}px`,
+                      height: `${particle.size}px`,
+                      backgroundColor: selectedCD ? `rgb(${selectedCD.color})` : 'rgba(255,255,255,0.4)',
+                      boxShadow: selectedCD ? `0 0 15px rgba(${selectedCD.color}, 0.8)` : '0 0 10px rgba(255,255,255,0.3)',
+                      opacity: isPlaying ? particle.opacity : 0.1,
+                      filter: `blur(${particle.blur}px)`,
+                      '--drift-x': `${particle.driftX}px`,
+                      '--drift-y': `${particle.driftY}px`,
+                      '--base-opacity': particle.opacity,
+                      animation: `float-particle ${particle.baseDuration}s ease-in-out infinite`,
+                      animationDelay: `${particle.delay}s`
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Player UI */}
+              <div className="w-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-3xl p-8 transition-all duration-700 relative z-10 overflow-hidden shadow-2xl"
+                   style={isPlaying && selectedCD ? { 
+                     boxShadow: `0 0 60px rgba(${selectedCD.color}, 0.3), 0 0 100px rgba(${selectedCD.color}, 0.1)`, 
+                     borderColor: `rgba(${selectedCD.color}, 0.4)` 
+                   } : {}}
+              >
+              
+              <div className="flex flex-col items-center">
+                {/* Spinning CD Display with Visualizer Glow */}
+                <div className="relative mb-6">
+                  {/* Visualizer Glow Ring */}
+                  {isPlaying && selectedCD && (
+                    <div className="absolute inset-[-20px] rounded-full border animate-[ping_2s_linear_infinite] pointer-events-none" style={{ borderColor: `rgba(${selectedCD.color}, 0.5)` }}></div>
+                  )}
+                  {isPlaying && selectedCD && (
+                    <div className="absolute inset-[-40px] rounded-full border animate-[ping_3s_linear_infinite] pointer-events-none delay-500" style={{ borderColor: `rgba(${selectedCD.color}, 0.3)` }}></div>
+                  )}
+                  {isPlaying && selectedCD && (
+                    <div className="absolute inset-[-60px] rounded-full border animate-[ping_4s_linear_infinite] pointer-events-none delay-1000" style={{ borderColor: `rgba(${selectedCD.color}, 0.15)` }}></div>
+                  )}
+
+                  {/* CD Plate */}
+                  <div className={`w-48 h-48 rounded-full border-4 border-zinc-800 flex items-center justify-center relative overflow-hidden transition-all duration-500 shadow-xl ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}
+                       style={isPlaying && selectedCD ? { boxShadow: `0 0 50px rgba(${selectedCD.color}, 0.6)` } : {}}
+                  >
+                  {selectedCD ? (
+                    <img src={selectedCD.img} alt={selectedCD.name} className="absolute inset-0 w-full h-full object-cover" />
+                  ) : (
+                     <div className="text-zinc-700 bg-zinc-950 w-full h-full flex flex-col items-center justify-center">
+                       <Disc size={48} />
+                     </div>
+                  )}
+                  {/* Center Hole */}
+                  <div className="w-12 h-12 bg-zinc-900 rounded-full z-10 border-2 border-zinc-700 absolute"></div>
+                </div>
+              </div>
+
+                {/* Track Info */}
+                <div className="mt-8 w-full text-center">
+                  {selectedCD ? (
+                    <>
+                      <h3 className="text-xl font-bold text-white truncate">{selectedCD.name}</h3>
+                      <p className="text-zinc-400 text-sm">{selectedCD.artist}</p>
+                      
+                      {/* Progress Bar */}
+                      <div 
+                        className="w-full h-1.5 bg-zinc-800 rounded-full mt-6 overflow-hidden relative cursor-pointer group"
+                        onClick={handleProgressBarClick}
+                      >
+                        <div className="absolute top-0 left-0 h-full transition-all duration-200" style={{ width: `${progress}%`, backgroundColor: selectedCD ? `rgb(${selectedCD.color})` : '#a855f7' }}></div>
+                        <div className="absolute top-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      </div>
+
+                      {/* Controls */}
+                      <div className="flex items-center justify-center gap-6 mt-6">
+                        <button 
+                          onClick={() => {
+                            setProgress(0);
+                            if (audioRef.current) {
+                              audioRef.current.currentTime = 0;
+                            }
+                          }} 
+                          className="text-zinc-400 hover:text-white transition-colors"
+                        >
+                          <SkipBack size={24} />
+                        </button>
+                        <button 
+                          onClick={togglePlay} 
+                          className="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                        >
+                          {isPlaying ? <Pause size={28} className="fill-black" /> : <Play size={28} className="fill-black ml-1" />}
+                        </button>
+                        <div className="flex items-center gap-2 group relative">
+                           <button onClick={() => setIsMuted(!isMuted)} className="text-zinc-400 hover:text-white transition-colors">
+                             {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                           </button>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-zinc-500 italic mt-4">Select a CD from the rack below</p>
+                  )}
+                </div>
+                
+                {/* Hidden Audio Element */}
+                {selectedCD && (
+                  <audio 
+                    ref={audioRef}
+                    src={selectedCD.audio}
+                    onTimeUpdate={handleTimeUpdate}
+                    onEnded={handleAudioEnd}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+            {/* Premium Archive Container */}
+            <div className="w-full max-w-4xl mt-20 bg-zinc-950/40 border border-white/5 rounded-[2rem] overflow-hidden backdrop-blur-3xl shadow-[0_30px_100px_rgba(0,0,0,0.5)] transition-all duration-700">
+              {/* Minimalist Header Toggle */}
+              <button 
+                onClick={() => setShowCDRack(!showCDRack)}
+                className="w-full flex items-center justify-between p-8 hover:bg-white/[0.02] transition-colors group"
+              >
+                <div className="flex items-center gap-8">
+                  {/* Polished Spindle Animation */}
+                  <div className="relative w-24 h-24 flex flex-col items-center justify-end group-hover:scale-110 transition-transform duration-700">
+                    <div className="absolute bottom-4 w-4 h-16 bg-gradient-to-r from-zinc-800 via-zinc-400 to-zinc-800 rounded-full border border-white/10 z-10 shadow-inner"></div>
+                    
+                    {/* Emptying Stack Logic */}
+                    <div className={`absolute bottom-5 w-full flex flex-col items-center justify-end z-20 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] ${showCDRack ? 'opacity-0 -translate-y-8 scale-75 blur-md' : 'opacity-100 translate-y-0 scale-100 blur-0'}`}>
+                      {hobbyData.music.top5.map((_, idx) => (
+                        <div key={idx} className="w-20 h-2.5 rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] shrink-0 -mt-1.5 border-[0.5px] border-white/20" 
+                             style={{
+                               background: 'linear-gradient(90deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%)',
+                               boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.1)'
+                             }}>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="absolute bottom-0 w-24 h-8 rounded-full bg-zinc-900 border-4 border-zinc-950 z-30 shadow-2xl"></div>
+                  </div>
+                  
+                  <div className="text-left space-y-1">
+                    <h4 className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase group-hover:text-blue-400 transition-colors">Library // 01</h4>
+                    <h5 className="text-2xl font-medium text-white tracking-tighter">Collection Archive</h5>
+                    <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest pt-1">
+                      {showCDRack ? "Accessing_Database..." : "Select_Media_to_Load"}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-700 ${showCDRack ? 'border-blue-500/50 text-blue-400 rotate-180 bg-blue-500/5 shadow-[0_0_20px_rgba(59,130,246,0.2)]' : 'border-white/10 text-white/20 group-hover:border-white group-hover:text-white'}`}>
+                  <ChevronDown size={24} strokeWidth={1} />
+                </div>
+              </button>
+
+              {/* Collapsible Content - Curated Grid */}
+              <div 
+                className={`grid transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] ${showCDRack ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+              >
+                <div className="overflow-hidden">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 p-10 pt-0 border-t border-white/5">
+                    {hobbyData.music.top5.map((cd, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => playCD(cd)}
+                        className="group flex flex-col items-center transition-all duration-500"
+                      >
+                        <div className={`w-full aspect-square bg-zinc-900 rounded-[1.5rem] overflow-hidden border transition-all duration-700 relative ${selectedCD?.name === cd.name ? 'scale-105 border-white/40 shadow-[0_15px_40px_rgba(0,0,0,0.4)]' : 'border-white/5 group-hover:border-white/20 group-hover:scale-105'}`}>
+                          {/* Minimal Active Indicator Overlay */}
+                          {selectedCD?.name === cd.name && (
+                            <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6] z-20"></div>
+                          )}
+                          <img 
+                            src={cd.img} 
+                            alt={cd.name} 
+                            className={`w-full h-full object-cover transition-all duration-1000 ${selectedCD?.name === cd.name ? 'opacity-100 scale-110 blur-0' : 'opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-110'}`} 
+                          />
+                        </div>
+                        <div className="mt-4 text-center px-2">
+                           <p className={`text-[10px] font-black tracking-widest uppercase transition-colors duration-500 ${selectedCD?.name === cd.name ? 'text-blue-400' : 'text-zinc-600 group-hover:text-zinc-300'}`}>
+                             {cd.name}
+                           </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      {/* Games View */}
+        {activeTab === 'games' && (
+          <div className="max-w-4xl mx-auto flex flex-col items-center animate-fade-in-up">
+             
+             {/* TV/Monitor Display */}
+             <div className="flex flex-col items-center justify-center min-h-[500px] mb-12 w-full">
+               {selectedGame?.device === 'mobile' ? (
+                 <div className="w-[95vw] max-w-[750px] h-[280px] sm:h-[360px] bg-zinc-900 border-[6px] sm:border-8 border-zinc-800 rounded-[2.5rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-2xl relative flex items-center justify-center transition-all duration-500">
+                    <div className="h-20 w-4 sm:w-6 bg-black rounded-r-xl absolute left-0 z-20"></div>
+                    <div className="w-full h-full bg-black rounded-[1.8rem] sm:rounded-[2.5rem] overflow-hidden relative border-[3px] border-zinc-950 flex items-center justify-center">
+                      {selectedGame ? (
+                        selectedGame.name === 'Mobile Legends' && isMLActive ? renderML() : (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 sm:gap-4 transition-all duration-500 p-4 sm:p-6" style={{ backgroundColor: selectedGame.color }}>
+                            <img 
+                              src={selectedGame.icon} 
+                              alt={selectedGame.name} 
+                              onClick={selectedGame.name === 'Mobile Legends' ? startML : undefined}
+                              className={`w-24 h-24 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-2xl sm:rounded-[2rem] shadow-2xl object-cover shrink-0 ${selectedGame.name === 'Mobile Legends' ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
+                            />
+                            <h3 className="text-xl sm:text-3xl md:text-4xl font-bold text-white shadow-black drop-shadow-xl tracking-widest uppercase text-center truncate w-full px-4">{selectedGame.name}</h3>
+                            {selectedGame.name === 'Mobile Legends' && (
+                              <p className="text-xs sm:text-sm font-medium text-white/90 animate-pulse bg-black/40 px-3 py-1 rounded-full shadow-lg border border-white/20">👆 Tap Icon to Play</p>
+                            )}
+                          </div>
+                        )
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-600 bg-black">
+                          <Gamepad2 className="mb-4 sm:mb-6 opacity-50 w-16 h-16 sm:w-24 sm:h-24" />
+                          <p className="font-mono text-sm sm:text-xl md:text-2xl tracking-widest uppercase text-zinc-500">Awaiting Input...</p>
+                        </div>
+                      )}
+                    </div>
+                 </div>
+               ) : (
+                 <div className="w-[95vw] max-w-[900px] flex flex-col items-center transition-all duration-500">
+                    <div className="w-full bg-zinc-900 border-[6px] sm:border-[10px] border-zinc-800 rounded-3xl sm:rounded-[2.5rem] p-3 sm:p-6 shadow-2xl relative flex flex-col">
+                      <div className="w-full aspect-[16/10] sm:aspect-video bg-black rounded-xl sm:rounded-2xl overflow-hidden relative border-4 border-zinc-950">
+                        {selectedGame ? (
+                          selectedGame.name === 'Valorant' && isMinigameActive ? renderMinigame() : 
+                          selectedGame.name === 'Minecraft' && isMinecraftActive ? renderMinecraft() : 
+                          selectedGame.name === 'Roblox' && isRobloxActive ? renderRoblox() : (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 sm:gap-8 transition-all duration-500 p-4" style={{ backgroundColor: selectedGame.color }}>
+                              <img 
+                                src={selectedGame.icon} 
+                                alt={selectedGame.name} 
+                                onClick={selectedGame.name === 'Valorant' ? startMinigame : selectedGame.name === 'Minecraft' ? startMinecraft : selectedGame.name === 'Roblox' ? startRoblox : undefined}
+                                className={`w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl object-cover shrink-0 ${(selectedGame.name === 'Valorant' || selectedGame.name === 'Minecraft' || selectedGame.name === 'Roblox') ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
+                              />
+                              <div className="flex flex-col items-center gap-2">
+                                <h3 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white shadow-black drop-shadow-xl tracking-widest uppercase text-center">{selectedGame.name}</h3>
+                                {(selectedGame.name === 'Valorant' || selectedGame.name === 'Minecraft' || selectedGame.name === 'Roblox') && (
+                                  <p className="text-sm sm:text-lg font-medium text-white/90 animate-pulse bg-black/40 px-4 py-1.5 rounded-full shadow-lg border border-white/20 mt-1">🖱️ Click Icon to Play</p>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        ) : (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-600 bg-black">
+                            <Gamepad2 className="mb-4 sm:mb-6 opacity-50 w-16 h-16 sm:w-24 sm:h-24" />
+                            <p className="font-mono text-sm sm:text-xl md:text-2xl tracking-widest uppercase text-zinc-500">Awaiting Input...</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* TV Stand */}
+                    <div className="tv-stand-leg w-1/4 h-8 sm:h-12 bg-zinc-800 mx-auto rounded-b-xl flex flex-col items-center shadow-xl">
+                      <div className="tv-stand-groove w-full h-1 sm:h-2 bg-zinc-700 mt-2 sm:mt-3"></div>
+                    </div>
+                    <div className="tv-stand-base w-48 sm:w-80 h-3 sm:h-4 bg-zinc-700 mx-auto rounded-full mt-1 shadow-md"></div>
+                 </div>
+               )}
+             </div>
+
+             {/* Game Library (Cartridges) */}
+             <div className="flex flex-wrap justify-center gap-4">
+               {hobbyData.games.items.map((game, index) => (
+                 <button 
+                   key={index}
+                   onClick={() => setSelectedGame(game)}
+                   className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-110 ${
+                     selectedGame?.name === game.name ? 'border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)]' : 'border-zinc-800 opacity-70 hover:opacity-100 hover:border-zinc-600'
+                   }`}
+                 >
+                   <img src={game.icon} alt={game.name} className="w-full h-full object-cover" />
+                 </button>
+               ))}
+             </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes float-particle {
+          0% { 
+            transform: translate(0, 0) scale(0.5); 
+            opacity: 0; 
+          }
+          20% { 
+            opacity: var(--base-opacity, 0.7);
+            transform: translate(calc(var(--drift-x) * 0.1), calc(var(--drift-y) * 0.1)) scale(1.1);
+          }
+          50% {
+            transform: translate(calc(var(--drift-x) * 0.5 + 20px), calc(var(--drift-y) * 0.5 - 20px)) scale(0.9);
+            opacity: calc(var(--base-opacity, 0.7) * 1.3);
+          }
+          80% { 
+            opacity: var(--base-opacity, 0.7);
+            transform: translate(calc(var(--drift-x) * 0.8), calc(var(--drift-y) * 0.8)) scale(1.1);
+          }
+          100% { 
+            transform: translate(var(--drift-x), var(--drift-y)) scale(0.5); 
+            opacity: 0; 
+          }
+        }
+      `}} />
+    </section>
+  );
+};
+
+export default Hobbies;

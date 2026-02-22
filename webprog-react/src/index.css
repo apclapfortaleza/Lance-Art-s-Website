@@ -1,0 +1,634 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-zinc-900 text-zinc-100 antialiased overflow-x-hidden;
+  }
+}
+
+/* Custom scrollbar and animations from the original Vue app */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.arcade-font {
+  font-family: 'Press Start 2P', system-ui, cursive;
+}
+
+/* Sketch mode — melting paint dissolve effect on portrait cover */
+.sketch-cover-overlay {
+  -webkit-mask-image: radial-gradient(circle, black 0%, black 100%);
+  mask-image: radial-gradient(circle, black 0%, black 100%);
+  transition: opacity 1.2s ease, mask-image 1.2s ease, -webkit-mask-image 1.2s ease, transform 1s ease;
+}
+
+.sketch-portrait-group:hover .sketch-cover-overlay {
+  -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 40%, black 100%);
+  mask-image: radial-gradient(circle, transparent 0%, transparent 40%, black 100%);
+  opacity: 0;
+  transform: scale(1.08) translateY(8px);
+}
+
+/* ============================================
+   SKETCH / INKY LIGHT MODE
+   ============================================ */
+
+/* Subtle paper grain texture only */
+.sketch-mode body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  pointer-events: none;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 28px,
+      rgba(120, 100, 80, 0.03) 28px,
+      rgba(120, 100, 80, 0.03) 29px
+    );
+  opacity: 0.5;
+}
+
+/* Watercolor floral accents per section — pure CSS gradients */
+.sketch-mode section,
+.sketch-mode footer {
+  position: relative;
+}
+
+/* Hero — soft pink & blue watercolor wash */
+.sketch-mode #about::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 60%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 90% 10%, rgba(225, 150, 180, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(160, 180, 230, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 95% 35%, rgba(200, 140, 160, 0.20) 0%, transparent 35%);
+}
+
+/* Education — sage green & lavender garden wash */
+.sketch-mode #edu::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  height: 55%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 5% 85%, rgba(140, 190, 130, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 60%, rgba(180, 155, 210, 0.20) 0%, transparent 40%);
+}
+
+/* Portfolio — warm gold & rose wash */
+.sketch-mode #exp::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 45%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 8% 15%, rgba(220, 180, 120, 0.30) 0%, transparent 45%),
+    radial-gradient(ellipse at 15% 50%, rgba(215, 150, 170, 0.22) 0%, transparent 40%);
+}
+
+/* Hobbies — purple & teal artistic splash */
+.sketch-mode #hobbies::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 55%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(170, 145, 210, 0.30) 0%, transparent 45%),
+    radial-gradient(ellipse at 95% 55%, rgba(130, 195, 185, 0.22) 0%, transparent 40%);
+}
+
+/* Gallery — romantic pink & warm gold */
+.sketch-mode #memory-heart::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 55%;
+  height: 60%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 90% 80%, rgba(225, 150, 180, 0.30) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 90%, rgba(200, 170, 130, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 85% 40%, rgba(180, 155, 210, 0.18) 0%, transparent 35%);
+}
+
+/* Guestbook — soft blue & pink */
+.sketch-mode #guestbook::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 10% 15%, rgba(150, 175, 225, 0.30) 0%, transparent 45%),
+    radial-gradient(ellipse at 5% 50%, rgba(220, 160, 180, 0.20) 0%, transparent 40%);
+}
+
+/* Resources — green & warm tones */
+.sketch-mode #resources::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 45%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 85% 85%, rgba(140, 190, 130, 0.30) 0%, transparent 45%),
+    radial-gradient(ellipse at 95% 60%, rgba(220, 180, 120, 0.20) 0%, transparent 40%);
+}
+
+/* === BASE OVERRIDES === */
+.sketch-mode body {
+  background-color: #f5f0e6 !important;
+  color: #2c2418 !important;
+}
+
+/* Main backgrounds */
+.sketch-mode .bg-zinc-900,
+.sketch-mode .bg-zinc-950 {
+  background-color: #f5f0e6 !important;
+}
+
+.sketch-mode .bg-zinc-900\/90 {
+  background-color: rgba(245, 240, 230, 0.95) !important;
+}
+
+/* Border overrides */
+.sketch-mode .border-zinc-800,
+.sketch-mode .border-zinc-700,
+.sketch-mode .border-zinc-700\/30 {
+  border-color: rgba(60, 50, 40, 0.15) !important;
+}
+
+/* Text color overrides */
+.sketch-mode .text-white {
+  color: #1a1710 !important;
+}
+
+.sketch-mode .text-zinc-100,
+.sketch-mode .text-zinc-200 {
+  color: #2c2418 !important;
+}
+
+.sketch-mode .text-zinc-300,
+.sketch-mode .text-zinc-400 {
+  color: #5a4e3e !important;
+}
+
+.sketch-mode .text-zinc-500,
+.sketch-mode .text-zinc-600 {
+  color: #7a6e5e !important;
+}
+
+/* Blue accent → ink/indigo */
+.sketch-mode .text-blue-400,
+.sketch-mode .text-blue-500 {
+  color: #2c4a7c !important;
+}
+
+.sketch-mode .hover\:text-blue-400:hover {
+  color: #1a3a6c !important;
+}
+
+.sketch-mode .bg-blue-500,
+.sketch-mode .bg-blue-600 {
+  background-color: #2c4a7c !important;
+}
+
+/* === NAVBAR === */
+.sketch-mode nav {
+  background-color: rgba(245, 240, 230, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 2px solid rgba(60, 50, 40, 0.12) !important;
+}
+
+.sketch-mode nav .text-zinc-300 {
+  color: #5a4e3e !important;
+}
+
+.sketch-mode nav .text-zinc-300:hover {
+  color: #1a1710 !important;
+}
+
+/* === HERO SECTION === */
+.sketch-mode #about {
+  background-color: #f5f0e6 !important;
+}
+
+.sketch-mode #about canvas {
+  opacity: 0.08 !important;
+  filter: invert(1) sepia(0.4) !important;
+}
+
+.sketch-mode .bg-\[radial-gradient\(circle_at_center\,rgba\(0\,0\,0\,0\)_0\%\,rgba\(24\,24\,27\,1\)_100\%\)\] {
+  background: radial-gradient(circle at center, rgba(245,240,230,0) 0%, rgba(245,240,230,1) 100%) !important;
+}
+
+/* Hexagon/cyber elements → sketch style */
+.sketch-mode .border-blue-500\/30,
+.sketch-mode .border-blue-500\/20 {
+  border-color: rgba(44, 74, 124, 0.25) !important;
+  border-style: dashed !important;
+}
+
+.sketch-mode .bg-zinc-950 {
+  background-color: #f5f0e6 !important;
+}
+
+.sketch-mode .bg-zinc-950\/80 {
+  background-color: rgba(245, 240, 230, 0.85) !important;
+}
+
+/* === EDUCATION SECTION === */
+.sketch-mode #edu {
+  background-color: #f0ebe1 !important;
+  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
+}
+
+.sketch-mode #edu .bg-zinc-900\/60 {
+  background-color: rgba(230, 222, 210, 0.6) !important;
+}
+
+.sketch-mode #edu .border-blue-500\/50 {
+  border-color: rgba(44, 74, 124, 0.4) !important;
+  border-style: dashed !important;
+}
+
+.sketch-mode #edu .bg-blue-500\/20 {
+  background-color: rgba(44, 74, 124, 0.08) !important;
+}
+
+.sketch-mode #edu .text-blue-400 {
+  color: #2c4a7c !important;
+}
+
+/* === PORTFOLIO SECTION === */
+.sketch-mode #exp {
+  background-color: #efe9dd !important;
+}
+
+.sketch-mode #exp .bg-zinc-950\/60 {
+  background-color: rgba(240, 235, 225, 0.8) !important;
+  border: 2px dashed rgba(60, 50, 40, 0.2) !important;
+}
+
+.sketch-mode #exp .bg-zinc-900 {
+  background-color: #e8e2d6 !important;
+}
+
+.sketch-mode #exp .border-zinc-800\/50 {
+  border-color: rgba(60, 50, 40, 0.2) !important;
+}
+
+/* Project cards */
+.sketch-mode .rounded-\[2rem\] {
+  border-style: solid !important;
+}
+
+/* === HOBBIES SECTION === */
+.sketch-mode #hobbies {
+  background-color: #f5f0e6 !important;
+  background-image: none !important;
+}
+
+.sketch-mode #hobbies .bg-zinc-900\/80 {
+  background-color: rgba(240, 235, 225, 0.9) !important;
+  border: 2px dashed rgba(60, 50, 40, 0.2) !important;
+}
+
+.sketch-mode #hobbies .bg-zinc-900\/50 {
+  background-color: rgba(240, 235, 225, 0.7) !important;
+}
+
+.sketch-mode #hobbies .bg-zinc-950\/40 {
+  background-color: rgba(240, 235, 225, 0.6) !important;
+}
+
+/* CD player & TV frame in sketch mode */
+.sketch-mode #hobbies .border-zinc-800 {
+  border-color: rgba(60, 50, 40, 0.3) !important;
+  border-style: dashed !important;
+}
+
+/* TV Stand sketch mode */
+.sketch-mode #hobbies .tv-stand-leg,
+.sketch-mode #hobbies .tv-stand-base {
+  background-color: transparent !important;
+  border: 4px dashed rgba(60, 50, 40, 0.3) !important;
+  box-shadow: none !important;
+}
+.sketch-mode #hobbies .tv-stand-leg {
+  border-top: none !important;
+  border-radius: 0 0 1rem 1rem !important;
+}
+.sketch-mode #hobbies .tv-stand-groove {
+  background-color: rgba(60, 50, 40, 0.15) !important;
+}
+
+/* Hobbies icon buttons - fix white-on-white */
+.sketch-mode #hobbies .text-white\/40 {
+  color: rgba(60, 50, 40, 0.5) !important;
+}
+
+.sketch-mode #hobbies .group-hover\:text-white:hover,
+.sketch-mode #hobbies .group:hover .group-hover\:text-white {
+  color: #2c2418 !important;
+}
+
+.sketch-mode #hobbies .border-white\/10 {
+  border-color: rgba(60, 50, 40, 0.2) !important;
+}
+
+.sketch-mode #hobbies .group-hover\:border-white,
+.sketch-mode #hobbies .group:hover .group-hover\:border-white {
+  border-color: rgba(60, 50, 40, 0.5) !important;
+}
+
+.sketch-mode #hobbies .group-hover\:shadow-\[0_0_30px_rgba\(255\,255\,255\,0\.1\)\],
+.sketch-mode #hobbies .group:hover .group-hover\:shadow-\[0_0_30px_rgba\(255\,255\,255\,0\.1\)\] {
+  box-shadow: 0 0 20px rgba(60, 50, 40, 0.08) !important;
+}
+
+/* Hide holographic/laser effects in sketch mode — only background layer */
+.sketch-mode #memory-heart .z-0 svg,
+.sketch-mode .animate-hologram-float,
+.sketch-mode .animate-hologram-float-alt,
+.sketch-mode .animate-hologram-rotate,
+.sketch-mode .animate-scanline,
+.sketch-mode .animate-draw-path {
+  opacity: 0 !important;
+}
+
+/* Keep the Gallery's UI SVGs (icons, buttons) and flower decorations visible */
+.sketch-mode #memory-heart button svg,
+.sketch-mode #memory-heart .z-30 svg,
+.sketch-mode #memory-heart .z-10 svg {
+  opacity: 1 !important;
+}
+
+/* Hide laser sweep line */
+.sketch-mode .bg-cyan-400 {
+  opacity: 0 !important;
+}
+
+/* Hide hologram grid overlays */
+.sketch-mode .bg-\[linear-gradient\(rgba\(0\,255\,255\,0\.05\)_1px\,transparent_1px\)\,linear-gradient\(90deg\,rgba\(0\,255\,255\,0\.05\)_1px\,transparent_1px\)\] {
+  opacity: 0 !important;
+}
+
+.sketch-mode .bg-\[repeating-linear-gradient\(0deg\,transparent\,transparent_2px\,rgba\(0\,255\,255\,0\.1\)_3px\,transparent_3px\)\] {
+  opacity: 0 !important;
+}
+
+/* === GALLERY SECTION === */
+.sketch-mode #memory-heart {
+  background-color: #f5f0e6 !important;
+  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
+}
+
+/* Book cover → natural craft/leather sketchbook */
+.sketch-mode #memory-heart .bg-\[\#3e2723\] {
+  background-color: #c4a882 !important;
+  background-image: 
+    url('https://www.transparenttextures.com/patterns/leather.png'),
+    linear-gradient(135deg, #c4a882 0%, #b89970 50%, #c4a882 100%) !important;
+  border-color: #8b7355 !important;
+  box-shadow: 8px 8px 20px rgba(80, 60, 40, 0.3), 
+              inset 2px 0 10px rgba(80, 60, 40, 0.2) !important;
+}
+
+.sketch-mode #memory-heart .bg-\[\#3e2723\]:hover {
+  box-shadow: 8px 12px 25px rgba(80, 60, 40, 0.4), 
+              inset 2px 0 10px rgba(80, 60, 40, 0.2) !important;
+}
+
+/* Book border (frame) */
+.sketch-mode #memory-heart .border-\[\#2d1b18\] {
+  border-color: #8b7355 !important;
+}
+
+/* Spine & grooves now handled via JSX conditional styling */
+
+/* Cover stitching → hand-drawn thread line */
+.sketch-mode #memory-heart .border-\[\#5c3a21\]\/60 {
+  border-color: rgba(100, 75, 45, 0.35) !important;
+  border-width: 1.5px !important;
+}
+
+/* Title → dark ink with sketch feel */
+.sketch-mode #memory-heart .text-\[\#d4af37\] {
+  color: #3d2b1f !important;
+  text-shadow: none !important;
+  filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r'%3E%3CfeTurbulence baseFrequency='0.03' numOctaves='2' seed='1'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='1.5'/%3E%3C/filter%3E%3C/svg%3E#r");
+}
+
+/* Heart icon on cover → dark ink */
+.sketch-mode #memory-heart .text-yellow-600\/80 {
+  color: #3d2b1f !important;
+}
+
+.sketch-mode #memory-heart .fill-yellow-600\/30 {
+  fill: rgba(61, 43, 31, 0.15) !important;
+}
+
+/* Drop shadow removal for sketch feel */
+.sketch-mode #memory-heart .drop-shadow-\[0_2px_4px_rgba\(0\,0\,0\,1\)\],
+.sketch-mode #memory-heart .drop-shadow-\[0_4px_6px_rgba\(0\,0\,0\,1\)\] {
+  filter: none !important;
+}
+
+/* Photo thumbnails on cover → polaroid-ish */
+.sketch-mode #memory-heart .border-\[\#5c3a21\] {
+  border-color: rgba(100, 80, 55, 0.4) !important;
+  border-style: solid !important;
+}
+
+/* "Open Album" text */
+.sketch-mode #memory-heart .bg-\[\#3e2723\]\/5,
+.sketch-mode #memory-heart .hover\:bg-\[\#3e2723\]\/10:hover {
+  background-color: rgba(100, 80, 55, 0.08) !important;
+}
+
+.sketch-mode #memory-heart .text-\[\#3e2723\] {
+  color: #3d2b1f !important;
+}
+
+/* Opened book pages → warm paper */
+.sketch-mode #memory-heart .bg-\[\#fdfaf6\],
+.sketch-mode #memory-heart .bg-\[\#fffdfa\] {
+  background-color: #f8f4ec !important;
+  background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png') !important;
+}
+
+.sketch-mode #memory-heart .bg-\[\#f4f1ea\] {
+  background-color: #f0ebe1 !important;
+  border: 1px dashed rgba(60, 50, 40, 0.15) !important;
+}
+
+/* Gold elements → ink blue */
+.sketch-mode .text-yellow-600\/80,
+.sketch-mode .fill-yellow-600\/30 {
+  color: #2c4a7c !important;
+  fill: rgba(44, 74, 124, 0.2) !important;
+}
+
+/* Holographic effects → subtle ink patterns */
+.sketch-mode .text-cyan-400\/40,
+.sketch-mode .text-emerald-400\/40,
+.sketch-mode .text-cyan-500\/15 {
+  color: rgba(44, 74, 124, 0.08) !important;
+}
+
+.sketch-mode .animate-hologram-float,
+.sketch-mode .animate-hologram-float-alt,
+.sketch-mode .animate-hologram-rotate,
+.sketch-mode .animate-scanline {
+  opacity: 0.04 !important;
+}
+
+/* === GUESTBOOK SECTION === */
+.sketch-mode #guestbook {
+  background-color: #f0ebe1 !important;
+  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
+}
+
+.sketch-mode #guestbook .bg-zinc-900 {
+  background-color: #e8e2d6 !important;
+}
+
+.sketch-mode #guestbook input,
+.sketch-mode #guestbook textarea {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  border: 1.5px dashed rgba(60, 50, 40, 0.25) !important;
+  color: #2c2418 !important;
+}
+
+.sketch-mode #guestbook input::placeholder,
+.sketch-mode #guestbook textarea::placeholder {
+  color: rgba(60, 50, 40, 0.4) !important;
+}
+
+.sketch-mode #guestbook .border {
+  border-style: dashed !important;
+  border-color: rgba(60, 50, 40, 0.15) !important;
+}
+
+/* === FOOTER/RESOURCES === */
+.sketch-mode #resources {
+  background-color: #f5f0e6 !important;
+  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
+}
+
+.sketch-mode #resources .bg-zinc-900 {
+  background-color: #ede7db !important;
+  border: 1.5px dashed rgba(60, 50, 40, 0.2) !important;
+}
+
+.sketch-mode #resources .bg-zinc-950 {
+  background-color: #e8e2d6 !important;
+}
+
+/* === MOBILE MENU === */
+.sketch-mode .bg-zinc-900\/95 {
+  background-color: rgba(245, 240, 230, 0.97) !important;
+}
+
+/* === MODAL OVERLAY === */
+.sketch-mode .bg-black\/98 {
+  background-color: rgba(245, 240, 230, 0.98) !important;
+}
+
+.sketch-mode .bg-black\/98 img,
+.sketch-mode .bg-black\/98 video {
+  border-color: rgba(60, 50, 40, 0.3) !important;
+  box-shadow: 0 20px 60px rgba(60, 50, 40, 0.2) !important;
+}
+
+/* === SCROLLBAR === */
+.sketch-mode ::-webkit-scrollbar-track {
+  background: #f0ebe1 !important;
+}
+
+.sketch-mode ::-webkit-scrollbar-thumb {
+  background: #c4b9a8 !important;
+  border: 1px dashed rgba(60, 50, 40, 0.3) !important;
+}
+
+.sketch-mode ::-webkit-scrollbar-thumb:hover {
+  background: #a89888 !important;
+}
+
+/* === SKETCH DECORATIVE ELEMENTS === */
+
+/* Add cross-hatch shading to active elements */
+.sketch-mode .shadow-lg,
+.sketch-mode .shadow-xl,
+.sketch-mode .shadow-2xl {
+  box-shadow: 3px 3px 0px rgba(60, 50, 40, 0.08), 
+              6px 6px 0px rgba(60, 50, 40, 0.04) !important;
+}
+
+/* Dashed focus rings */
+.sketch-mode *:focus-visible {
+  outline: 2px dashed #2c4a7c !important;
+  outline-offset: 2px;
+}
+
+/* Smooth transition when toggling themes */
+.sketch-mode,
+.sketch-mode body,
+.sketch-mode * {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.6s;
+  transition-timing-function: ease;
+}
+
+/* Keep animations snappy - don't slow them */
+.sketch-mode [class*="animate-"],
+.sketch-mode [class*="transition-transform"],
+.sketch-mode [class*="transition-all"] {
+  transition-duration: inherit;
+}

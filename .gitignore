@@ -1,0 +1,6 @@
+webprog-it241-vuejs/
+**/node_modules/
+**/.env
+**/.env.*
+**/dist/
+**/.DS_Store
