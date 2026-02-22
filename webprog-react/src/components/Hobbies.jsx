@@ -279,15 +279,17 @@ const Hobbies = () => {
       currentPos -= rbSpeedRef.current;
       
       // Collision check (character at left: 10%, width: ~10%, obstacle width ~5%)
-      if (currentPos < 18 && currentPos > 5 && !isJumpingRef.current) {
+      // Tightened collision window for fairness
+      if (currentPos < 15 && currentPos > 7 && !isJumpingRef.current) {
          setIsRobloxGameOver(true);
          return; // stop loop
       }
 
-      if (currentPos < -10) {
+      if (currentPos < -15) {
          setRobloxScore(s => s + 10);
-         rbSpeedRef.current += 0.05; // slowly increase speed
-         currentPos = 100 + Math.random() * 20; // random offset for next spawn
+         rbSpeedRef.current += 0.02; // Slower speed ramp for fairer long-term play
+         // Dynamically space obstacles farther apart as they get faster
+         currentPos = 100 + Math.random() * (20 + (rbSpeedRef.current * 30)); 
       }
       
       setObstaclePos(currentPos);
@@ -974,17 +976,17 @@ const Hobbies = () => {
                           selectedGame.name === 'Valorant' && isMinigameActive ? renderMinigame() : 
                           selectedGame.name === 'Minecraft' && isMinecraftActive ? renderMinecraft() : 
                           selectedGame.name === 'Roblox' && isRobloxActive ? renderRoblox() : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 sm:gap-8 transition-all duration-500 p-4" style={{ backgroundColor: selectedGame.color }}>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 sm:gap-8 transition-all duration-500 p-2 sm:p-4" style={{ backgroundColor: selectedGame.color }}>
                               <img 
                                 src={selectedGame.icon} 
                                 alt={selectedGame.name} 
                                 onClick={selectedGame.name === 'Valorant' ? startMinigame : selectedGame.name === 'Minecraft' ? startMinecraft : selectedGame.name === 'Roblox' ? startRoblox : undefined}
-                                className={`w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl object-cover shrink-0 ${(selectedGame.name === 'Valorant' || selectedGame.name === 'Minecraft' || selectedGame.name === 'Roblox') ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
+                                className={`w-20 h-20 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-[1rem] sm:rounded-[2.5rem] shadow-2xl object-cover shrink-0 ${(selectedGame.name === 'Valorant' || selectedGame.name === 'Minecraft' || selectedGame.name === 'Roblox') ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`} 
                               />
-                              <div className="flex flex-col items-center gap-2">
-                                <h3 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white shadow-black drop-shadow-xl tracking-widest uppercase text-center">{selectedGame.name}</h3>
+                              <div className="flex flex-col items-center gap-1 sm:gap-2">
+                                <h3 className="text-xl sm:text-4xl md:text-6xl font-bold text-white shadow-black drop-shadow-xl tracking-widest uppercase text-center truncate px-2">{selectedGame.name}</h3>
                                 {(selectedGame.name === 'Valorant' || selectedGame.name === 'Minecraft' || selectedGame.name === 'Roblox') && (
-                                  <p className="text-sm sm:text-lg font-medium text-white/90 animate-pulse bg-black/40 px-4 py-1.5 rounded-full shadow-lg border border-white/20 mt-1">🖱️ Click Icon to Play</p>
+                                  <p className="text-[10px] sm:text-lg font-medium text-white/90 animate-pulse bg-black/40 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-lg border border-white/20 mt-1">🖱️ Click Icon to Play</p>
                                 )}
                               </div>
                             </div>

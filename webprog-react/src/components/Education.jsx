@@ -183,7 +183,7 @@ const Education = () => {
 
                   {/* Corner Readout HUD */}
                   {isSystemActive && (
-                    <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded text-[9px] font-mono text-blue-400 z-40 flex flex-col gap-1 shadow-2xl">
+                    <div className="hidden sm:flex absolute bottom-4 right-4 bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded text-[9px] font-mono text-blue-400 z-40 flex-col gap-1 shadow-2xl">
                       <span className="flex justify-between gap-4 font-bold text-white mb-1 border-b border-white/10 pb-1">UPLINK: ACTIVE</span>
                       <span className="flex justify-between gap-4">LOC: <span>{educationData[hoveredIndex].coords}</span></span>
                       <span className="flex justify-between gap-4">ALT: <span>2.4KM</span></span>

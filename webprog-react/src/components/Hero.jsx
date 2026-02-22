@@ -270,7 +270,12 @@ const Hero = () => {
             </div>
           ) : (
             /* ========== DARK MODE: Original Cyber HUD ========== */
-            <div className="relative group cursor-pointer w-[320px] h-[320px] md:w-[450px] md:h-[450px] flex items-center justify-center">
+            <div 
+              className={`relative group cursor-pointer w-[320px] h-[320px] md:w-[450px] md:h-[450px] flex items-center justify-center ${isHovered ? 'mobile-reveal-active' : ''}`}
+              onClick={() => setIsHovered(!isHovered)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               
               {/* Background Data Cluster (Connection to Canvas) */}
               <div className="absolute inset-x-0 inset-y-0 z-0 opacity-20 pointer-events-none">
@@ -397,6 +402,17 @@ const Hero = () => {
         @keyframes orbit {
           from { transform: rotate(0deg) translate(-50%, -50%); }
           to { transform: rotate(360deg) translate(-50%, -50%); }
+        }
+        @media (max-width: 1024px) {
+           .mobile-reveal-active .group-hover\\:opacity-100 { opacity: 1 !important; }
+           .mobile-reveal-active .group-hover\\:opacity-0 { opacity: 0 !important; }
+           .mobile-reveal-active .group-hover\\:scale-100 { transform: scale(1) !important; }
+           .mobile-reveal-active .group-hover\\:scale-105 { transform: scale(1.05) !important; }
+           .mobile-reveal-active .group-hover\\:scale-125 { transform: scale(1.25) !important; }
+           .mobile-reveal-active .group-hover\\:border-blue-500 { border-color: #3b82f6 !important; }
+           .mobile-reveal-active .group-hover\\:border-purple-500 { border-color: #a855f7 !important; }
+           .mobile-reveal-active .group-hover\\:border-indigo-500 { border-color: #6366f1 !important; }
+           .mobile-reveal-active .group-hover\\:text-blue-400 { color: #60a5fa !important; }
         }
         @keyframes hologram-flicker {
           0% { opacity: 0.25; }
