@@ -536,20 +536,7 @@
   opacity: 0.04 !important;
 }
 
-/* === FOOTER/RESOURCES === */
-.sketch-mode #resources {
-  background-color: #f5f0e6 !important;
-  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
-}
 
-.sketch-mode #resources .bg-zinc-900 {
-  background-color: #ede7db !important;
-  border: 1.5px dashed rgba(60, 50, 40, 0.2) !important;
-}
-
-.sketch-mode #resources .bg-zinc-950 {
-  background-color: #e8e2d6 !important;
-}
 
 /* === MOBILE MENU === */
 .sketch-mode .bg-zinc-900\/95 {
@@ -611,4 +598,77 @@
 .sketch-mode [class*="transition-transform"],
 .sketch-mode [class*="transition-all"] {
   transition-duration: inherit;
+}
+
+/* ============================================
+   SKETCH MODE — GLOBAL SVG SCRIBBLE DOODLES
+   ============================================ */
+
+/* Shared doodle layer base */
+.sketch-mode #about::before,
+.sketch-mode #edu::before,
+.sketch-mode #exp::before,
+.sketch-mode #hobbies::before,
+.sketch-mode #memory-heart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  background-repeat: no-repeat;
+}
+
+/* Hero — stars + spiral top-right, arrow bottom-left */
+.sketch-mode #about::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12,2 L14.5,9 L22,9 L16,13.5 L18,21 L12,16.5 L6,21 L8,13.5 L2,9 L9.5,9 Z' fill='none' stroke='rgba(146,108,71,0.15)' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M8,1 L10,6 L15,6 L11,9 L12.5,14 L8,11 L3.5,14 L5,9 L1,6 L6,6 Z' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M10,20 C15,10 30,10 30,20 C30,30 15,33 13,25 C11,17 25,10 33,17' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Cpath d='M0,25 Q10,8 22,0' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M16,-2 L22,0 L18,6' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: top 60px right 80px, top 40px right 120px, top 100px right 50px, bottom 80px left 60px;
+  background-size: 24px 24px, 16px 16px, 40px 40px, 30px 30px;
+}
+
+/* Education — heart + wavy line + Xs */
+.sketch-mode #edu::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='18'%3E%3Cpath d='M8,4 C8,2 6,0 4,2 C2,0 0,2 0,4 C0,8 4,12 4,12 S8,8 8,4 Z' fill='none' stroke='rgba(146,108,71,0.12)' stroke-width='1.2' stroke-linejoin='round' transform='translate(4,3)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='10'%3E%3Cpath d='M0,5 Q25,0 50,5 Q75,10 100,5 Q125,0 150,5 Q175,10 200,5' fill='none' stroke='rgba(146,108,71,0.06)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='0' y1='0' x2='12' y2='12' stroke='rgba(146,108,71,0.1)' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='12' y1='0' x2='0' y2='12' stroke='rgba(146,108,71,0.1)' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='0' y1='0' x2='12' y2='12' stroke='rgba(146,108,71,0.08)' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='12' y1='0' x2='0' y2='12' stroke='rgba(146,108,71,0.08)' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: top 50px right 70px, bottom 100px left 40px, top 80px left 50px, bottom 60px right 90px;
+  background-size: 16px 18px, 200px 10px, 12px 12px, 12px 12px;
+}
+
+/* Portfolio — circles + bracket + dots */
+.sketch-mode #exp::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Ccircle cx='18' cy='18' r='15' fill='none' stroke='rgba(146,108,71,0.08)' stroke-width='1.5'/%3E%3Ccircle cx='20' cy='16' r='12' fill='none' stroke='rgba(146,108,71,0.05)' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='30'%3E%3Cpath d='M0,0 Q-8,15 0,30' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M18,0 Q26,15 18,30' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cline x1='7' y1='0' x2='7' y2='14' stroke='rgba(146,108,71,0.1)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cline x1='0' y1='7' x2='14' y2='7' stroke='rgba(146,108,71,0.1)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cline x1='2' y1='2' x2='12' y2='12' stroke='rgba(146,108,71,0.08)' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='12' y1='2' x2='2' y2='12' stroke='rgba(146,108,71,0.08)' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: bottom 70px left 45px, top 60px right 55px, bottom 50px right 100px;
+  background-size: 36px 36px, 20px 30px, 14px 14px;
+}
+
+/* Hobbies — stars + spiral + arrow */
+.sketch-mode #hobbies::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M10,1 L12,7 L18,7 L13,11 L15,17 L10,13 L5,17 L7,11 L2,7 L8,7 Z' fill='none' stroke='rgba(146,108,71,0.12)' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='35' height='35'%3E%3Cpath d='M8,18 C12,10 25,10 25,18 C25,26 12,28 10,22 C8,16 20,10 28,15' fill='none' stroke='rgba(146,108,71,0.08)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='25'%3E%3Cpath d='M0,22 Q8,6 18,0' fill='none' stroke='rgba(146,108,71,0.09)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13,-2 L18,0 L15,5' fill='none' stroke='rgba(146,108,71,0.09)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='16'%3E%3Cpath d='M7,3 C7,1.5 5.5,0 4,1.5 C2.5,0 1,1.5 1,3 C1,6 4,8.5 4,8.5 S7,6 7,3 Z' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1' stroke-linejoin='round' transform='translate(3,4)'/%3E%3C/svg%3E");
+  background-position: bottom 40px right 50px, top 80px left 40px, bottom 100px left 80px, top 50px right 100px;
+  background-size: 20px 20px, 35px 35px, 25px 25px, 14px 16px;
+}
+
+/* Gallery — hearts + wavy line + dots */
+.sketch-mode #memory-heart::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='20'%3E%3Cpath d='M9,5 C9,2.5 7,0 5,2.5 C3,0 1,2.5 1,5 C1,9 5,13 5,13 S9,9 9,5 Z' fill='none' stroke='rgba(146,108,71,0.12)' stroke-width='1.2' stroke-linejoin='round' transform='translate(4,3)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='14'%3E%3Cpath d='M6,3 C6,1.5 4.5,0 3,1.5 C1.5,0 0,1.5 0,3 C0,5.5 3,8 3,8 S6,5.5 6,3 Z' fill='none' stroke='rgba(146,108,71,0.08)' stroke-width='1' stroke-linejoin='round' transform='translate(3,3)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='10'%3E%3Cpath d='M0,5 Q20,0 40,5 Q60,10 80,5 Q100,0 120,5 Q140,10 160,5' fill='none' stroke='rgba(146,108,71,0.06)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M10,1 L12,7 L18,7 L13,11 L15,17 L10,13 L5,17 L7,11 L2,7 L8,7 Z' fill='none' stroke='rgba(146,108,71,0.1)' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: top 70px right 60px, top 50px right 110px, bottom 80px left 30px, bottom 50px left 60px;
+  background-size: 18px 20px, 12px 14px, 160px 10px, 20px 20px;
 }

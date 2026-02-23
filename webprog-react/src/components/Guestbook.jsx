@@ -64,7 +64,75 @@ const Guestbook = () => {
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
         </>
       ) : (
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/graphy.png")' }}></div>
+        <>
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/graphy.png")' }}></div>
+          {/* SVG Scribble Doodles */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
+            {/* Star – top right */}
+            <g transform="translate(880, 80)" opacity="0.09">
+              <path d="M10,1 L12.5,7 L19,7 L14,11 L15.5,18 L10,14 L4.5,18 L6,11 L1,7 L7.5,7 Z"
+                fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinejoin="round" />
+            </g>
+            {/* Smaller star */}
+            <g transform="translate(920, 120)" opacity="0.06">
+              <path d="M6,0 L7.5,4.5 L12,4.5 L8.5,7 L9.5,11.5 L6,9 L2.5,11.5 L3.5,7 L0,4.5 L4.5,4.5 Z"
+                fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1" strokeLinejoin="round" />
+            </g>
+            {/* Spiral – top left */}
+            <path d="M70,140 C80,130 95,130 95,140 C95,150 80,155 75,145 C70,135 85,125 98,132"
+              fill="none" stroke="rgba(146,108,71,0.07)" strokeWidth="1.5" strokeLinecap="round"
+              strokeDasharray="150" strokeDashoffset="150"
+              style={{ animation: 'draw-line 2s ease-out 0.5s forwards' }} />
+            {/* Wavy line – middle */}
+            <path d="M50,450 Q 90,435 130,450 Q 170,465 210,450 Q 250,435 290,450"
+              fill="none" stroke="rgba(146,108,71,0.06)" strokeWidth="1.5" strokeLinecap="round"
+              strokeDasharray="300" strokeDashoffset="300"
+              style={{ animation: 'draw-line 2.5s ease-out 1s forwards' }} />
+            {/* Heart – bottom left */}
+            <g transform="translate(100, 700)" opacity="0.08">
+              <path d="M12,6 C12,3 9,0 6,3 C3,0 0,3 0,6 C0,11 6,16 6,16 C6,16 12,11 12,6 Z"
+                fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1.2" strokeLinejoin="round" />
+            </g>
+            {/* Arrow – right side */}
+            <g transform="translate(900, 500)" opacity="0.07">
+              <path d="M0,25 Q 8,8 20,0" fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M14,-2 L20,0 L16,6" fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+            {/* X marks */}
+            <g transform="translate(830, 300)" opacity="0.05">
+              <line x1="0" y1="0" x2="10" y2="10" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinecap="round" />
+              <line x1="10" y1="0" x2="0" y2="10" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinecap="round" />
+            </g>
+            <g transform="translate(60, 350)" opacity="0.05">
+              <line x1="0" y1="0" x2="8" y2="8" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinecap="round" />
+              <line x1="8" y1="0" x2="0" y2="8" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinecap="round" />
+            </g>
+            {/* Dotted trail */}
+            <g opacity="0.05">
+              {[...Array(6)].map((_, i) => (
+                <circle key={i} cx={750 + i * 16} cy={600 + Math.sin(i) * 8} r="1.5" fill="rgba(146,108,71,1)" />
+              ))}
+            </g>
+            {/* Curly bracket */}
+            <g transform="translate(50, 200)" opacity="0.05">
+              <path d="M0,0 Q -6,12 0,24" fill="none" stroke="rgba(146,108,71,1)" strokeWidth="1.3" strokeLinecap="round" />
+            </g>
+            {/* Circle scribble */}
+            <circle cx="870" cy="680" r="15" fill="none" stroke="rgba(146,108,71,0.05)" strokeWidth="1.3"
+              strokeDasharray="100" strokeDashoffset="100"
+              style={{ animation: 'draw-line 2s ease-out 1.5s forwards' }} />
+            {/* Asterisk */}
+            <g transform="translate(450, 60)" opacity="0.06">
+              <line x1="5" y1="0" x2="5" y2="10" stroke="rgba(146,108,71,1)" strokeWidth="1.2" strokeLinecap="round" />
+              <line x1="0" y1="5" x2="10" y2="5" stroke="rgba(146,108,71,1)" strokeWidth="1.2" strokeLinecap="round" />
+              <line x1="1.5" y1="1.5" x2="8.5" y2="8.5" stroke="rgba(146,108,71,1)" strokeWidth="0.9" strokeLinecap="round" />
+              <line x1="8.5" y1="1.5" x2="1.5" y2="8.5" stroke="rgba(146,108,71,1)" strokeWidth="0.9" strokeLinecap="round" />
+            </g>
+          </svg>
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes draw-line { to { stroke-dashoffset: 0; } }
+          `}} />
+        </>
       )}
 
       <div className="container mx-auto px-6 max-w-5xl relative z-10">
