@@ -53,18 +53,4 @@ export class GuestbookService {
       createdAt: entry.created_at
     };
   }
-
-  async delete(id: number) {
-    const { data, error } = await this.supabase
-      .from('guestbook')
-      .delete()
-      .match({ id })
-      .select();
-
-    if (error) {
-       console.error('Supabase error deleting entry:', error);
-       throw new InternalServerErrorException('Failed to delete guestbook message');
-    }
-    return data;
-  }
 }

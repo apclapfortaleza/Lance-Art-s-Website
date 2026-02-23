@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { GuestbookService } from './guestbook.service';
 
 @Controller('guestbook')
@@ -13,11 +13,5 @@ export class GuestbookController {
   @Post()
   create(@Body() createGuestbookDto: { name: string; message: string }) {
     return this.guestbookService.create(createGuestbookDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    // In Supabase, if your ID is a number, we keep it as a number
-    return this.guestbookService.delete(Number(id));
   }
 }

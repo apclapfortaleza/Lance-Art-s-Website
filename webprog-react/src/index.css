@@ -536,33 +536,6 @@
   opacity: 0.04 !important;
 }
 
-/* === GUESTBOOK SECTION === */
-.sketch-mode #guestbook {
-  background-color: #f0ebe1 !important;
-  border-top: 2px dashed rgba(60, 50, 40, 0.15) !important;
-}
-
-.sketch-mode #guestbook .bg-zinc-900 {
-  background-color: #e8e2d6 !important;
-}
-
-.sketch-mode #guestbook input,
-.sketch-mode #guestbook textarea {
-  background-color: rgba(255, 255, 255, 0.6) !important;
-  border: 1.5px dashed rgba(60, 50, 40, 0.25) !important;
-  color: #2c2418 !important;
-}
-
-.sketch-mode #guestbook input::placeholder,
-.sketch-mode #guestbook textarea::placeholder {
-  color: rgba(60, 50, 40, 0.4) !important;
-}
-
-.sketch-mode #guestbook .border {
-  border-style: dashed !important;
-  border-color: rgba(60, 50, 40, 0.15) !important;
-}
-
 /* === FOOTER/RESOURCES === */
 .sketch-mode #resources {
   background-color: #f5f0e6 !important;
